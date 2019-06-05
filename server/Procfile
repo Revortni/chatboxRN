@@ -1,1 +1,2 @@
-worker: node ./server/index
+web: node myserver
+worker: node myserver

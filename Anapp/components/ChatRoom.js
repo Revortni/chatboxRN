@@ -1,10 +1,13 @@
 import React from 'react';
-import { View, StyleSheet,Text,AsyncStorage} from 'react-native';
+import { View, StyleSheet,Text} from 'react-native';
+import {AsyncStorage} from '@react-native-community/async-storage';
 import SocketIOClient from 'socket.io-client/dist/socket.io.js';
 import Input from './Input';
 import MessageList from './MessageList';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import uuid from 'uuid';
+
+const INFO = 'userInfo'
 
 class ChatRoom extends React.Component {
     constructor(props) {
@@ -13,16 +16,40 @@ class ChatRoom extends React.Component {
             messages: [],
             sender:'Rev',
             userid:null,
+            username:'',
             title:'Gospel'
             };
-        this.socket = SocketIOClient('http://192.168.1.3:3000');
-        this.socket.on('receiveMessage',(data)=>this.receiveMessage(data));
-        this.socket.on('userInfo',(id)=>this.setState({userid:id,title:id}));        
+        this.socket = SocketIOClient('https://still-retreat-32950.herokuapp.com/');
+        this.socket.on('receiveMessage',(data)=>this.receiveMessage(data));      
+        this.socket.on('userInfo',(userid)=>{this.setState({userid})});
+        // this.getInfo();       
     }
 
     onChangeText = (text)=>{
         this.setState({text:text});
     }
+
+    // _getInfo = async()=>{
+    //     try {
+    //         AsyncStorage.getItem(INFO)
+    //         .then((userInfo) => {
+    //         userInfo = JSON.parse(userInfo);
+    //             if (!userInfo) {
+    //                 this.socket.emit('newUser',this.state.username);
+    //                 this.socket.on('newUser', (userid) => {
+    //                 data = JSON.stringify({userid:userid,username:this.state.username});
+    //                 AsyncStorage.setItem(INFO, data);
+    //                 this.setState({ userid });
+    //             });
+    //             } else {
+    //             this.socket.emit('oldUser', userInfo);
+    //             this.setState(userInfo);
+    //             }
+    //         })
+    //     } catch(error){
+            
+    //     }
+    // }
 
     sendMessage = () =>{
         let msgs = this.state.messages;
@@ -41,6 +68,8 @@ class ChatRoom extends React.Component {
             messages:msgs
         });
     }
+
+
 
     render() {
     return(

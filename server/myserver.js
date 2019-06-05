@@ -1,9 +1,10 @@
-var express=require('express');//function handler
-var app = express();
+const express=require('express');
+const app = express();
 var http = require('http').Server(app);
 var io=require('socket.io')(http);
 var uuid = require('uuid/v4');
-
+const path = require('path');
+app.set('port',(process.env.PORT || 3000));
 
 var userCount=0;
 var userlist={};
@@ -39,7 +40,7 @@ function newconnection(socket){
 	});
 }
 
-http.listen(3000,function(){
-	console.log('listening on port 3000');
+http.listen(app.get('port'),function(){
+	console.log('listening on port ',app.get('port'));
 });
 
