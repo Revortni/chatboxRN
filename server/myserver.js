@@ -4,24 +4,45 @@ var http = require('http').Server(app);
 var io=require('socket.io')(http);
 var uuid = require('uuid/v4');
 const path = require('path');
-app.set('port',(process.env.PORT || 3000));
+const port = process.env.PORT || 3000;
 
-var userCount=0;
-var userlist={};
+
+var userlist=[];
 
 io.on('connection',newconnection);
 
 //functions to call on connection
 function newconnection(socket){
-	//when user connects
-	let id = uuid();
-	console.log(`User ${id} connected`)
-	socket.emit('userInfo',id);
-	socket.emit('receiveMessage',{message:"Hello\nWelcome to ChatBox"});
-	
+	let id;
+	console.log(userlist);
+	//when a new user connects
+	socket.on('newUser',({username,email})=>{
+		id = uuid();
+		console.log(`User ${id} connected`)
+		userlist.push({userid:id,username:username,email:email});
+		socket.emit('userInfo',id);
+		socket.emit('receiveMessage',{message:"Hello Stranger\nWelcome to ChatBox"});
+		socket.broadcast.emit("inewUser",username);
+	});
+
+	//when a old user connects
+	socket.on('oldUser',({userid})=>{
+		id = userid;
+		let user = userlist.filter((x)=>{
+			if(x.userid==id){
+				return true;
+			}
+			return false
+		});
+		let username = user[0].username;
+		console.log(`User ${userid} connected`);
+		socket.emit('receiveMessage',{message:`Hello ${username}\nWelcome back to ChatBox`});
+		socket.broadcast.emit("userConnected",username);
+	});
 	
 	//when user sends a message
 	socket.on('sendMessage',function(data){
+		console.log(data);
 		socket.broadcast.emit('receiveMessage',data);
 	});
 
@@ -40,7 +61,8 @@ function newconnection(socket){
 	});
 }
 
-http.listen(app.get('port'),function(){
-	console.log('listening on port ',app.get('port'));
+http.listen(port,function(){
+	console.log('listening on port ',port);
+	console.log(userlist);
 });
 
