@@ -21,10 +21,10 @@ class ChatRoom extends React.Component {
             title:'Gospel',
             text:"",
             };
-        this.socket = SocketIOClient(heroku);
+        this.socket = SocketIOClient(localhost);
         this.socket.on('receiveMessage',(data)=>this.receiveMessage(data));      
         this.socket.on('userInfo',(userid)=>{this.setState({userid})});
-        this.socket.on('userConnected',(data)=>this.serverInfo(data));
+        this.socket.on('serverInfo',(data)=>this.serverInfo(data));
         this._getInfo();       
     }
 

@@ -14,6 +14,7 @@ export default class HomeScreen extends Component {
       username: '',
       email:''
     }
+    AsyncStorage.clear();
     this.checkRegistration();
   }
 

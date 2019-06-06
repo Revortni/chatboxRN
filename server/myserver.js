@@ -16,10 +16,11 @@ io.on('connection',newconnection);
 //functions to call on connection
 function newconnection(socket){
 	var id;
+	var username;
 	console.log(userlist);
 	//server messages
 	initialres = ()=>{
-		socket.emit('userConnected',{message:((onlineusers-1)==1)?'A user is online':`${onlineusers-1} users are online`});
+		socket.emit('serverInfo',{message:((onlineusers-1)==1)?'A user is online':`${onlineusers-1} users are online`});
 		setTimeout(()=>{
 			if(onlineusers==1){
 				socket.emit('receiveMessage',{message:`It appears you are the only one who is online right now.`});
@@ -33,12 +34,13 @@ function newconnection(socket){
 		id = uuid();
 		totalusers++;
 		onlineusers++;
+		username = username
 		console.log(`User ${id} connected`)
 		userlist.push({userid:id,username:username,email:email});
 		socket.emit('userInfo',id);
 		socket.emit('receiveMessage',{message:"Hello Stranger\nWelcome to ChatBox"});
 		setTimeout(()=>initialres(),2000);
-		socket.broadcast.emit("userConnected",username);
+		socket.broadcast.emit("serverInfo",{message:`${username} has joined the chat.`});
 	});
 
 	//when a old user connects
@@ -51,11 +53,11 @@ function newconnection(socket){
 			}
 			return false
 		});
-		let username = user[0].username;
+		username = user[0].username;
 		console.log(`User ${userid} connected`);
 		socket.emit('receiveMessage',{message:`Hello ${username}\nWelcome back to ChatBox`});
 		setTimeout(()=>initialres(),2000);
-		socket.broadcast.emit("userConnected",{message:`${username} has connected`});
+		socket.broadcast.emit("serverInfo",{message:`${username} has joined the chat.`});
 	});
 	
 	//when user sends a message
@@ -77,6 +79,7 @@ function newconnection(socket){
 	socket.on("disconnect",()=>{
 		onlineusers--;
 		console.log(`User ${id} disconnected`);
+		socket.broadcast.emit("serverInfo",{message:`${username} has left the chat.`});
 	});
 }
 
