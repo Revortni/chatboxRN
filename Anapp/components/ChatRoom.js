@@ -1,55 +1,53 @@
 import React from 'react';
 import { View, StyleSheet,Text} from 'react-native';
-import {AsyncStorage} from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-community/async-storage';
 import SocketIOClient from 'socket.io-client/dist/socket.io.js';
 import Input from './Input';
 import MessageList from './MessageList';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import uuid from 'uuid';
 
-const INFO = 'userInfo'
+const INFO = '@userInfo';
+
+const {localhost,heroku} = require('./config.json');
 
 class ChatRoom extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             messages: [],
-            sender:'Rev',
             userid:null,
-            username:'',
-            title:'Gospel'
+            username:this.props.username,
+            email:this.props.email,
+            title:'Gospel',
+            text:"",
             };
-        this.socket = SocketIOClient('https://still-retreat-32950.herokuapp.com/');
+        
+        this.socket = SocketIOClient(localhost);
         this.socket.on('receiveMessage',(data)=>this.receiveMessage(data));      
         this.socket.on('userInfo',(userid)=>{this.setState({userid})});
-        // this.getInfo();       
+        this._getInfo();       
     }
 
-    onChangeText = (text)=>{
-        this.setState({text:text});
+    _getInfo = async()=>{
+        try{
+            const userInfo = await AsyncStorage.getItem(INFO);
+            if (userInfo==null) {
+                this.socket.emit('newUser',{username:this.state.username,email:this.state.email});
+                this.socket.on('userInfo', (userid) => {
+                data = JSON.stringify({userid:userid,username:this.state.username});
+                AsyncStorage.setItem(INFO, data);
+                this.setState({ userid });
+            });
+            }
+            else {
+                info = JSON.parse(userInfo);
+                this.socket.emit('oldUser', info);
+                this.setState(info);
+            }
+        } catch(e){
+            alert(e);
+        }
     }
-
-    // _getInfo = async()=>{
-    //     try {
-    //         AsyncStorage.getItem(INFO)
-    //         .then((userInfo) => {
-    //         userInfo = JSON.parse(userInfo);
-    //             if (!userInfo) {
-    //                 this.socket.emit('newUser',this.state.username);
-    //                 this.socket.on('newUser', (userid) => {
-    //                 data = JSON.stringify({userid:userid,username:this.state.username});
-    //                 AsyncStorage.setItem(INFO, data);
-    //                 this.setState({ userid });
-    //             });
-    //             } else {
-    //             this.socket.emit('oldUser', userInfo);
-    //             this.setState(userInfo);
-    //             }
-    //         })
-    //     } catch(error){
-            
-    //     }
-    // }
 
     sendMessage = () =>{
         let msgs = this.state.messages;
@@ -69,34 +67,32 @@ class ChatRoom extends React.Component {
         });
     }
 
-
-
     render() {
-    return(
-    <View style = {styles.container}>
-        <View style={styles.headbar}>
-            <Text style={styles.headTitle}>{this.state.title}</Text>
-        </View>
-        <MessageList messages ={this.state.messages}/>
-        <View style = {styles.inputArea}>      
-        <Input
-            placeholder="Aa"
-            onChangeText={text=>this.onChangeText(text)}
-            style={styles.sendMsg}
-            value={this.state.text}
-            multiline={true}
-        />
-        <Icon.Button 
-            name="send" 
-            onPress={()=>this.sendMessage()}
-            backgroundColor='#87cefa'
-            size={24}
-            style={{padding:13,paddingTop:8,paddingLeft:8}}
-            borderRadius={400}
-        />
-        </View>
-    </View>
-    );
+        return(
+            <View style = {styles.container}>
+                <View style={styles.headbar}>
+                    <Text style={styles.headTitle}>{this.state.title}</Text>
+                </View>
+                <MessageList messages ={this.state.messages}/>
+                <View style = {styles.inputArea}>      
+                <Input
+                    placeholder="Aa"
+                    onChangeText={text=>this.setState({text})}
+                    style={styles.sendMsg}
+                    value={this.state.text}
+                    multiline={true}
+                />
+                <Icon.Button 
+                    name="send" 
+                    onPress={()=>this.sendMessage()}
+                    backgroundColor='#87cefa'
+                    size={24}
+                    style={{padding:13,paddingTop:8,paddingLeft:8}}
+                    borderRadius={400}
+                />
+                </View>
+            </View>
+        );
     }
 }
 
