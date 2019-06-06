@@ -8,13 +8,22 @@ const Message = (props) =>{
         <View style={styles.sent}>
           <Text style={styles.text}>{props.content}</Text>
         </View>
-        );
+      );
     }
-    return(
-    <View style={styles.rec}>
-      <Text style={styles.text}>{props.content}</Text>
-    </View>
-    );
+    else if (props.type=="rec"){
+      return(
+        <View style={styles.rec}>
+          <Text style={styles.text}>{props.content}</Text>
+        </View>
+      );
+    } 
+    else {
+      return(
+        <View style={styles.info}>
+          <Text style={styles.infoText}>{props.content}</Text>
+        </View>
+      );
+    }
 }
 
 const styles = StyleSheet.create({
@@ -45,6 +54,16 @@ const styles = StyleSheet.create({
     borderRadius:20,
     maxWidth:220,
     marginBottom:2
+  },
+  info:{
+    padding:10,
+    alignSelf:'center',
+    flexDirection:'column',
+    marginBottom:2
+  },
+  infoText:{
+    fontSize:12,
+    color:'#87cefa'
   },
   text:{
     fontSize:15,

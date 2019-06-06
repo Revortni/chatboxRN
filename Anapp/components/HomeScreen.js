@@ -35,11 +35,15 @@ export default class HomeScreen extends Component {
   register = () => {
     const pattern = /^[\w\.-]+@[\w\.-]+$/i
     let email = this.state.email;
-    if(this.state.username.length>0 && pattern.test(email)){
-      AsyncStorage.setItem("registered","true");
-      this.setState({registered:true});
+    if(this.state.username.length>0){
+      if(pattern.test(email)){
+        AsyncStorage.setItem("registered","true");
+        this.setState({registered:true});
+      } else {
+        alert("Please enter a proper email addresss");
+      }
     } else {
-      alert("Please enter a username and a proper email.");
+      alert("Please enter a username");
     }
   }
 
@@ -55,23 +59,24 @@ export default class HomeScreen extends Component {
           <Input
               placeholder="Enter a username"
               onChangeText={username=>this.setState({username})}
-              style={{ padding:10 }}
+              style={styles.input}
               blurOnSubmit = {true}
               multiline={false}
           />
           <Input
               placeholder="Enter your Email"
               onChangeText={email=>this.setState({email})}
-              style={{ padding:10 }}
+              style={styles.input}
               blurOnSubmit = {true}
               multiline={false}
           />
           <Icon.Button 
               name="send" 
               onPress={()=>this.register()}
-              backgroundColor='#87cefa'
-              size={24}
-              style={{padding:13,paddingTop:8,paddingLeft:8}}
+              backgroundColor="#F5FCFF"
+              color='#87cefa'
+              size={45}
+              style={{padding:13}}
               borderRadius={400}
           />
         </View>
@@ -85,6 +90,15 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    alignContent:'space-between',
     backgroundColor: '#F5FCFF',
   },
+  input:{
+    textAlign:'center',
+    fontSize:20,
+    borderRadius:20,
+    backgroundColor:'#F0FaFa',
+    margin:10,
+    padding:20,
+  }
 });

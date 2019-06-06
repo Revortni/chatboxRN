@@ -8,26 +8,43 @@ const port = process.env.PORT || 3000;
 
 
 var userlist=[];
+let totalusers=0;
+let onlineusers=0;
 
 io.on('connection',newconnection);
 
 //functions to call on connection
 function newconnection(socket){
-	let id;
+	var id;
 	console.log(userlist);
+	//server messages
+	initialres = ()=>{
+		socket.emit('userConnected',{message:((onlineusers-1)==1)?'A user is online':`${onlineusers-1} users are online`});
+		setTimeout(()=>{
+			if(onlineusers==1){
+				socket.emit('receiveMessage',{message:`It appears you are the only one who is online right now.`});
+			} else {
+				socket.emit('receiveMessage',{message:`Someone else is online right now. Try saying hi.`});
+			}
+		},2000)
+	}
 	//when a new user connects
 	socket.on('newUser',({username,email})=>{
 		id = uuid();
+		totalusers++;
+		onlineusers++;
 		console.log(`User ${id} connected`)
 		userlist.push({userid:id,username:username,email:email});
 		socket.emit('userInfo',id);
 		socket.emit('receiveMessage',{message:"Hello Stranger\nWelcome to ChatBox"});
-		socket.broadcast.emit("inewUser",username);
+		setTimeout(()=>initialres(),2000);
+		socket.broadcast.emit("userConnected",username);
 	});
 
 	//when a old user connects
 	socket.on('oldUser',({userid})=>{
 		id = userid;
+		onlineusers++;
 		let user = userlist.filter((x)=>{
 			if(x.userid==id){
 				return true;
@@ -37,7 +54,8 @@ function newconnection(socket){
 		let username = user[0].username;
 		console.log(`User ${userid} connected`);
 		socket.emit('receiveMessage',{message:`Hello ${username}\nWelcome back to ChatBox`});
-		socket.broadcast.emit("userConnected",username);
+		setTimeout(()=>initialres(),2000);
+		socket.broadcast.emit("userConnected",{message:`${username} has connected`});
 	});
 	
 	//when user sends a message
@@ -57,6 +75,7 @@ function newconnection(socket){
 
 	//when user disconnects from server
 	socket.on("disconnect",()=>{
+		onlineusers--;
 		console.log(`User ${id} disconnected`);
 	});
 }

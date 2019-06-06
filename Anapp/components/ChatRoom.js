@@ -21,10 +21,10 @@ class ChatRoom extends React.Component {
             title:'Gospel',
             text:"",
             };
-        
-        this.socket = SocketIOClient(localhost);
+        this.socket = SocketIOClient(heroku);
         this.socket.on('receiveMessage',(data)=>this.receiveMessage(data));      
         this.socket.on('userInfo',(userid)=>{this.setState({userid})});
+        this.socket.on('userConnected',(data)=>this.serverInfo(data));
         this._getInfo();       
     }
 
@@ -64,6 +64,14 @@ class ChatRoom extends React.Component {
         msgs.push({message:data.message,action:'rec'});
         this.setState({
             messages:msgs
+        });
+    }
+
+    serverInfo(data){
+        let msgs = this.state.messages;
+        msgs.push({message:data.message,action:'info'});
+        this.setState({
+            message:msgs
         });
     }
 
