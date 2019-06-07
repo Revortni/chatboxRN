@@ -22,10 +22,10 @@ class ChatRoom extends React.Component {
             text:"",
             };
         this.socket = SocketIOClient(heroku);
+        this.socket.on('connect',()=>this._getInfo());
         this.socket.on('receiveMessage',(data)=>this.receiveMessage(data));      
         this.socket.on('userInfo',(userid)=>{this.setState({userid})});
-        this.socket.on('serverInfo',(data)=>this.serverInfo(data));
-        this._getInfo();       
+        this.socket.on('serverInfo',(data)=>this.serverInfo(data));  
     }
 
     _getInfo = async()=>{
@@ -53,15 +53,15 @@ class ChatRoom extends React.Component {
         let msgs = this.state.messages;
         if(this.state.text){
             msg = this.state.text.trim();
-            this.socket.emit("sendMessage",{message:msg,userid:this.state.userid});
+            this.socket.emit("sendMessage",{message:msg,userid:this.state.userid,username:this.state.username});
             msgs.push({message:msg,action:'sent'});
             this.setState({messages:msgs,text:''});
         }
     }
     
-    receiveMessage(data){
+    receiveMessage({message,username=0}){
         let msgs = this.state.messages;
-        msgs.push({message:data.message,action:'rec'});
+        msgs.push({message:message,action:'rec',username:username});
         this.setState({
             messages:msgs
         });

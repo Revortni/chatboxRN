@@ -1,11 +1,14 @@
 const express=require('express');
 const app = express();
 var http = require('http').Server(app);
-var io=require('socket.io')(http);
+var io=require('socket.io')(http,{
+	// below are engine.IO options
+	pingInterval: 5000,
+	pingTimeout: 2000,
+  });
 var uuid = require('uuid/v4');
-const path = require('path');
-const port = process.env.PORT || 3000;
 
+app.set( 'port', ( process.env.PORT || 3000 ));
 
 var userlist=[];
 let totalusers=0;
@@ -17,7 +20,7 @@ io.on('connection',newconnection);
 function newconnection(socket){
 	var id;
 	var username;
-	console.log(userlist);
+	console.log(`${onlineusers} users are online`);
 	//server messages
 	initialres = ()=>{
 		socket.emit('serverInfo',{message:((onlineusers-1)==1)?'A user is online':`${onlineusers-1} users are online`});
@@ -27,14 +30,15 @@ function newconnection(socket){
 			} else {
 				socket.emit('receiveMessage',{message:`Someone else is online right now. Try saying hi.`});
 			}
-		},2000)
+		},2000);
 	}
 	//when a new user connects
-	socket.on('newUser',({username,email})=>{
+	socket.on('newUser',(data)=>{
 		id = uuid();
 		totalusers++;
 		onlineusers++;
-		username = username
+		username = data.username;
+		email = data.email;
 		console.log(`User ${id} connected`)
 		userlist.push({userid:id,username:username,email:email});
 		socket.emit('userInfo',id);
@@ -56,7 +60,9 @@ function newconnection(socket){
 		username = user[0].username;
 		console.log(`User ${userid} connected`);
 		socket.emit('receiveMessage',{message:`Hello ${username}\nWelcome back to ChatBox`});
-		setTimeout(()=>initialres(),2000);
+		setTimeout(()=>{
+			socket.emit('serverInfo',{message:((onlineusers-1)==1)?'A user is online':`${onlineusers-1} users are online`});
+		},2000);
 		socket.broadcast.emit("serverInfo",{message:`${username} has joined the chat.`});
 	});
 	
@@ -83,8 +89,8 @@ function newconnection(socket){
 	});
 }
 
-http.listen(port,function(){
-	console.log('listening on port ',port);
+http.listen(app.get( 'port' ),function(){
+	console.log('listening on port ',app.get( 'port' ));
 	console.log(userlist);
 });
 

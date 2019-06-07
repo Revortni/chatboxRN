@@ -42,7 +42,7 @@ export default class MessageList extends Component {
                     }
                 }>
                     <KeyboardAvoidingView style={styles.messageContainer}>
-                        {this.state.messages.map((x,i)=>(<Message type={x.action} content={x.message} key={i}/>))}
+                        {this.state.messages.map((x,i)=>(<Message type={x.action} content={x.message} username={x.username} key={i}/>))}
                     </KeyboardAvoidingView>
             </ScrollView>
             );

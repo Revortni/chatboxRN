@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { StyleSheet, Text, View} from 'react-native';
+import { StyleSheet,BackHandler, Alert, Text, View} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import Input from './Input';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -15,6 +15,30 @@ export default class HomeScreen extends Component {
       email:''
     }
     this.checkRegistration();
+  }
+
+  handleBackPress= () => {
+    Alert.alert(
+        'Exit App',
+        'Are you sure you want to exit?', [{
+            text: 'Cancel',
+            style: 'cancel'
+        }, {
+            text: 'OK',
+            onPress: () => BackHandler.exitApp()
+        }, ], {
+            cancelable: false
+        }
+     )
+     return true;
+   } 
+
+  componentDidMount(){
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackPress)
+  
+  }
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
   }
 
   checkRegistration = async()=>{

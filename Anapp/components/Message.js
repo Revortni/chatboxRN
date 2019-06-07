@@ -11,9 +11,16 @@ const Message = (props) =>{
       );
     }
     else if (props.type=="rec"){
+      let content = null;
+      if(props.username){
+        content = <Text style={styles.username}>{props.username}</Text>;
+      }
       return(
-        <View style={styles.rec}>
-          <Text style={styles.text}>{props.content}</Text>
+        <View>
+          {content}
+          <View style={styles.rec}>
+            <Text style={styles.text}>{props.content}</Text>
+          </View>
         </View>
       );
     } 
@@ -68,6 +75,11 @@ const styles = StyleSheet.create({
   text:{
     fontSize:15,
     color:'#2a2a2a'
+  },
+  username:{
+    marginLeft:15,
+    fontSize:13,
+    padding:2
   }
 });
 
