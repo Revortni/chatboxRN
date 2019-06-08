@@ -19,16 +19,38 @@ class ChatRoom extends React.Component {
             username:this.props.username,
             email:this.props.email,
             title:'Gospel',
+            connected:false,
             text:"",
             };
-        this.socket = SocketIOClient(heroku);
+        // this.timeout = "";
+        this.socket = SocketIOClient(localhost);
         this.socket.on('connect',()=>this._getInfo());
         this.socket.on('receiveMessage',(data)=>this.receiveMessage(data));      
         this.socket.on('userInfo',(userid)=>{this.setState({userid})});
         this.socket.on('serverInfo',(data)=>this.serverInfo(data));  
+        // this.socket.on('appOn',()=>clearInterval(this.timeout));
+        this.socket.on('disconnect',()=>this.serverInfo({message:"You have disconnected."}));
+        this.socket.on('reset',()=>{
+            AsyncStorage.removeItem(INFO);
+            this._getInfo();
+        });
+    }
+
+    componentDidMount(){
+        this.interval = setInterval(()=>{
+            this.socket.emit('appOn',{userid:this.state.userid,username:this.state.username});
+            // this.timeout = setTimeout(()=>{
+            //     this.setState({connected:false});                
+            // },2000);
+        },25000);
+    }
+
+    componentWillUnmount(){
+        clearInterval(this.interval);
     }
 
     _getInfo = async()=>{
+        // this.setState({connected:true});
         try{
             const userInfo = await AsyncStorage.getItem(INFO);
             if (userInfo==null) {

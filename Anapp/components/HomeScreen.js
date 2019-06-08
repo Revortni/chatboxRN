@@ -13,7 +13,7 @@ export default class HomeScreen extends Component {
       registered : false,
       username: '',
       email:''
-    }
+    }; 
     this.checkRegistration();
   }
 
