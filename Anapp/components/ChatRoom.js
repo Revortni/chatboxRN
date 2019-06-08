@@ -23,7 +23,7 @@ class ChatRoom extends React.Component {
             text:"",
             };
         // this.timeout = "";
-        this.socket = SocketIOClient(localhost);
+        this.socket = SocketIOClient(heroku);
         this.socket.on('connect',()=>this._getInfo());
         this.socket.on('receiveMessage',(data)=>this.receiveMessage(data));      
         this.socket.on('userInfo',(userid)=>{this.setState({userid})});
