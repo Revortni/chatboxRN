@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, BackHandler, StyleSheet,Text} from 'react-native';
+import {Alert, View, BackHandler, StyleSheet,Text} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import SocketIOClient from 'socket.io-client/dist/socket.io.js';
 import Input from './Input';
@@ -23,7 +23,7 @@ class ChatRoom extends React.Component {
             text:"",
             };
         // this.timeout = "";
-        this.socket = SocketIOClient(heroku);
+        this.socket = SocketIOClient(localhost);
         this.socket.on('connect',()=>this._getInfo());
         this.socket.on('receiveMessage',(data)=>this.receiveMessage(data));      
         this.socket.on('userInfo',(userid)=>{this.setState({userid})});
@@ -39,9 +39,7 @@ class ChatRoom extends React.Component {
             });
         });
         this.socket.on('resetMe',()=>{
-            AsyncStorage.clear();
-            alert("The app will now close to reset.Closing app..");
-            setTimeout(()=>BackHandler.exitApp(),5000);
+            this.reset();
         });
     }
 
@@ -56,6 +54,12 @@ class ChatRoom extends React.Component {
 
     componentWillUnmount(){
         clearInterval(this.interval);
+    }
+
+    reset = () =>{
+        AsyncStorage.clear();
+        Alert.alert("The app will now close to reset.Closing app..");
+        setTimeout(()=>BackHandler.exitApp(),3000);
     }
 
     _getInfo = async()=>{
