@@ -22,7 +22,11 @@ function newconnection(socket){
 	var id;
 	var name;
 	onlinecount++;
-	console.log(`Online user count: ${onlinecount}`);
+	if(onlineusers.length>0){
+		let users = onlineusers.map(x=>usermap[x]);
+		console.log("Users online:");
+		console.log(users);
+	}
 	
 	//server messages
 	initialres = ()=>{
@@ -32,6 +36,22 @@ function newconnection(socket){
 				socket.emit('receiveMessage',{message:`It appears you are the only one who is online right now.`});
 			} else {
 				socket.emit('receiveMessage',{message:`Someone else is online right now. Try saying hi.`});
+			}
+		},2000);
+	}
+
+	onlineUserInfo = () => {
+		setTimeout(()=>{
+			let count = onlinecount-1;
+			if(count<4 & count>0){
+				let users = onlineusers.filter(x=>x!=id);
+				let others =users.map(x=>usermap[x].username);
+				let msg = others.reduce((a,x)=>{
+					return a+' ,'+x;
+				})+(count==1?" is":" are")+" online";
+				socket.emit('serverInfo',{message:msg});
+			} else {
+				socket.emit('serverInfo',{message:(count==0)?'Nobody is online':`${count} users are online`});
 			}
 		},2000);
 	}
@@ -79,10 +99,9 @@ function newconnection(socket){
 		allusers.push(id);
 		onlineusers.push(id);
 		usermap[id]={username,mail,id};
-		socket.emit('receiveMessage',{message:`Hello ${name}\nYou have been reregisterd successfully`});
-		setTimeout(()=>{
-			socket.emit('serverInfo',{message:((onlinecount-1)==1)?'A user is online':`${onlinecount-1} users are online`});
-		},2000);
+		socket.emit('receiveMessage',{message:`Hello ${name}\nYou have been reregistered successfully`});
+		socket.broadcast.emit("serverInfo",{message:`${name} has joined the chat.`});
+		onlineUserInfo();
 		disconnect();
 	});
 
@@ -94,10 +113,8 @@ function newconnection(socket){
 			onlineusers.push(id);
 			console.log(`User ${userid} connected`);
 			socket.emit('receiveMessage',{message:`Hello ${name}\nWelcome back to ChatBox`});
-			setTimeout(()=>{
-				socket.emit('serverInfo',{message:((onlinecount-1)==1)?'A user is online':`${onlinecount-1} users are online`});
-			},2000);
 			socket.broadcast.emit("serverInfo",{message:`${name} has joined the chat.`});
+			onlineUserInfo();
 			disconnect();
 		} catch {
 			socket.emit('reregister');
@@ -129,9 +146,6 @@ function newconnection(socket){
 
 http.listen(app.get( 'port' ),function(){
 	console.log('listening on port ',app.get( 'port' ));
-	if(onlineusers.length>0){
-		let users = onlineusers.map(x=>usermap[x]);
-		console.log(users);
-	}
+	
 });
 
