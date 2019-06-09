@@ -74,7 +74,7 @@ export default class HomeScreen extends Component {
   render() {
     if (this.state.registered) {
       return (
-        <ChatRoom username = {this.state.username} email = {this.state.email}/>
+        <ChatRoom username = {this.state.username} email = {this.state.email} reset={()=>this.checkRegistration()}/>
       );
     }
     else {

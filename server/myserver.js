@@ -3,7 +3,7 @@ const app = express();
 var http = require('http').Server(app);
 var io=require('socket.io')(http,{
 	// below are engine.IO options
-	pingInterval: 15000,
+	pingInterval: 3000,
 	pingTimeout: 1000,
   });
 var uuid = require('uuid/v4');
@@ -57,8 +57,8 @@ function newconnection(socket){
 	}
 
 	//remove user from onlineuser list
-	removeuser = (id)=>{
-		let index = onlineusers.indexOf(id);
+	removeuser = (from,id)=>{
+		let index = from.indexOf(id);
 		if(index>-1){
 			onlineusers.splice(index,1);
 		}
@@ -68,7 +68,7 @@ function newconnection(socket){
 	disconnect = () =>{
 		socket.on("disconnect",()=>{
 			onlinecount--;
-			removeuser(id);
+			removeuser(onlineusers,id);
 			console.log(`User ${id} disconnected`);
 			socket.broadcast.emit("serverInfo",{message:`${name} has left the chat.`});
 		});
@@ -124,6 +124,15 @@ function newconnection(socket){
 	//when user sends a message
 	socket.on('sendMessage',function(data){
 		console.log(data);
+		if(data.message=="!resetMe"){
+			socket.emit("resetMe");
+			removeuser(onlineusers,id);
+			removeuser(allusers,id);
+			console.log('User '+usermap[id].username+' reset');
+			delete usermap[id];
+			socket.disconnect();
+			return;
+		}
 		socket.broadcast.emit('receiveMessage',data);
 	});
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet,Text} from 'react-native';
+import { View, BackHandler, StyleSheet,Text} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import SocketIOClient from 'socket.io-client/dist/socket.io.js';
 import Input from './Input';
@@ -37,6 +37,11 @@ class ChatRoom extends React.Component {
                 email:this.state.email,
                 userid:this.state.userid
             });
+        });
+        this.socket.on('resetMe',()=>{
+            AsyncStorage.clear();
+            alert("The app will now close to reset.Closing app..");
+            setTimeout(()=>BackHandler.exitApp(),5000);
         });
     }
 
