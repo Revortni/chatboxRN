@@ -23,16 +23,19 @@ class ChatRoom extends React.Component {
             text:"",
             };
         // this.timeout = "";
-        this.socket = SocketIOClient(heroku);
+        this.socket = SocketIOClient(localhost);
         this.socket.on('connect',()=>this._getInfo());
         this.socket.on('receiveMessage',(data)=>this.receiveMessage(data));      
         this.socket.on('userInfo',(userid)=>{this.setState({userid})});
         this.socket.on('serverInfo',(data)=>this.serverInfo(data));  
-        // this.socket.on('appOn',()=>clearInterval(this.timeout));
+        this.socket.on('appOn',()=>{});
         this.socket.on('disconnect',()=>this.serverInfo({message:"You have disconnected."}));
-        this.socket.on('reset',()=>{
-            AsyncStorage.removeItem(INFO);
-            this._getInfo();
+        this.socket.on('reregister',()=>{
+            this.socket.emit('reregister',{
+                username:this.state.username,
+                email:this.state.email,
+                userid:this.state.userid
+            });
         });
     }
 
@@ -54,7 +57,11 @@ class ChatRoom extends React.Component {
         try{
             const userInfo = await AsyncStorage.getItem(INFO);
             if (userInfo==null) {
-                this.socket.emit('newUser',{username:this.state.username,email:this.state.email});
+                if(this.state.userid){
+                    this.socket.emit('newUser',{username:this.state.username,email:this.state.email,userid:this.state.userid});
+                }else{
+                    this.socket.emit('newUser',{username:this.state.username,email:this.state.email});
+                }
                 this.socket.on('userInfo', (userid) => {
                 data = JSON.stringify({userid:userid,username:this.state.username});
                 AsyncStorage.setItem(INFO, data);
