@@ -14,6 +14,7 @@ export default class HomeScreen extends Component {
       username: '',
       email:''
     }; 
+    this.emailInput = React.createRef();
     this.checkRegistration();
   }
 
@@ -85,7 +86,11 @@ export default class HomeScreen extends Component {
               onChangeText={username=>this.setState({username})}
               style={styles.input}
               blurOnSubmit = {true}
+              onSubmitEditing={()=>this.emailInput.current.focus()}
               multiline={false}
+              returnKeyType='next'
+              blurOnSubmit={false}
+              autoFocus={true}
           />
           <Input
               placeholder="Enter your Email"
@@ -93,6 +98,10 @@ export default class HomeScreen extends Component {
               style={styles.input}
               blurOnSubmit = {true}
               multiline={false}
+              returnKeyType='go'
+              ref={this.emailInput}
+              blurOnSubmit={false}
+              onSubmitEditing={()=>this.register()}
           />
           <Icon.Button 
               name="send" 
