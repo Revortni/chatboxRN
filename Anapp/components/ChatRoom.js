@@ -31,6 +31,7 @@ class ChatRoom extends React.Component {
         this.socket.on('appOn',()=>{});
         this.socket.on('disconnect',()=>this.serverInfo({message:"You have disconnected."}));
         this.socket.on('reregister',()=>{
+            this.setState({messages:[]});
             this.socket.emit('reregister',{
                 username:this.state.username,
                 email:this.state.email,
