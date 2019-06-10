@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, TextInput } from 'react-native';
-const Input = props => {
-  return (
+const Input = React.forwardRef((props,ref) => 
     <View>
       <TextInput
         underlineColorAndroid="transparent"
@@ -16,8 +15,9 @@ const Input = props => {
         style={props.style}
         blurOnSubmit={false}
         value={props.value}
+        ref = {ref}
       />
     </View>
   );
-};
+
 export default Input;
