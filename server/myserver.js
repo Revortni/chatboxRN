@@ -3,13 +3,18 @@ const app = express();
 var http = require('http').Server(app);
 var io=require('socket.io')(http,{
 	// below are engine.IO options
-	pingInterval: 3000,
+	pingInterval: 5000,
 	pingTimeout: 1000,
   });
+const mongoose = require('mongoose');
+
 var uuid = require('uuid/v4');
 
-app.set( 'port', ( process.env.PORT || 3000 ));
+//Mongodb 
+// const userdb = mongoose.connect('mongodb://localhost:27017/users',{useNewUrlParser:true});
+// const messagedb = mongoose.connection('mongodb://localhost:27017/messages',{useNewUrlParser:true});
 
+//Socket io 
 let onlineusers=[];
 let allusers=[];
 let usermap = {};
@@ -146,12 +151,15 @@ function newconnection(socket){
 	// });
 
 	//ping the device to maintain connection
-	socket.on('appOn',(data)=>{
+	socket.on('appOn',()=>{
 		if(name){
 			console.log(name+" device pinged");
 		}
+		socket.emit('appOn');
 	});
 }
+
+app.set( 'port', ( process.env.PORT || 3000 ));
 
 http.listen(app.get( 'port' ),function(){
 	console.log('listening on port ',app.get( 'port' ));
