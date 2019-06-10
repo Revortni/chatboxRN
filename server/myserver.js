@@ -4,15 +4,10 @@ var http = require('http').Server(app);
 var io=require('socket.io')(http,{
 	// below are engine.IO options
 	pingInterval: 5000,
-	pingTimeout: 1000,
+	pingTimeout: 2000,
   });
-const mongoose = require('mongoose');
 
 var uuid = require('uuid/v4');
-
-//Mongodb 
-// const userdb = mongoose.connect('mongodb://localhost:27017/users',{useNewUrlParser:true});
-// const messagedb = mongoose.connection('mongodb://localhost:27017/messages',{useNewUrlParser:true});
 
 //Socket io 
 let onlineusers=[];
@@ -42,12 +37,12 @@ function newconnection(socket){
 			} else {
 				socket.emit('receiveMessage',{message:`Someone else is online right now. Try saying hi.`});
 			}
-		},2000);
+		},1500);
 	}
 
 	onlineUserInfo = () => {
 		setTimeout(()=>{
-			let count = onlinecount-1;
+			let count = onlineusers.length-1;
 			if(count<4 & count>0){
 				let users = onlineusers.filter(x=>x!=id);
 				let others =users.map(x=>usermap[x].username);
@@ -58,7 +53,7 @@ function newconnection(socket){
 			} else {
 				socket.emit('serverInfo',{message:(count==0)?'Nobody is online':`${count} users are online`});
 			}
-		},2000);
+		},1500);
 	}
 
 	//remove user from onlineuser list
@@ -74,7 +69,7 @@ function newconnection(socket){
 		socket.on("disconnect",()=>{
 			onlinecount--;
 			removeuser(onlineusers,id);
-			console.log(`User ${id} disconnected`);
+			console.log(`User ${name} disconnected`);
 			socket.broadcast.emit("serverInfo",{message:`${name} has left the chat.`});
 		});
 	}
@@ -83,13 +78,13 @@ function newconnection(socket){
 		id = uuid();
 		name = username;
 		mail = email;
-		console.log(`User ${id} connected`);
+		console.log(`User ${name} connected`);
 		allusers.push(id);
 		onlineusers.push(id);
 		usermap[id]={username,mail,id};
 		socket.emit('userInfo',id);
 		socket.emit('receiveMessage',{message:"Hello Stranger\nWelcome to ChatBox"});
-		setTimeout(()=>initialres(),2000);
+		setTimeout(()=>initialres(),1000);
 		socket.broadcast.emit("serverInfo",{message:`${name} has joined the chat.`});
 		disconnect();
 	});
@@ -100,7 +95,7 @@ function newconnection(socket){
 		id = userid;
 		name = username;
 		mail = email;
-		console.log(`User ${id} connected`);
+		console.log(`User ${name} connected`);
 		allusers.push(id);
 		onlineusers.push(id);
 		usermap[id]={username,mail,id};
@@ -111,12 +106,15 @@ function newconnection(socket){
 	});
 
 	//when a old user connects
-	socket.on('oldUser',({userid})=>{
+	socket.on('oldUser',({userid,username})=>{
 		try{
 			id = userid;
+			if(usermap[id].username!=username){
+				usermap[id].username=username;
+			}
 			name = usermap[id].username;
 			onlineusers.push(id);
-			console.log(`User ${userid} connected`);
+			console.log(`User ${name} connected`);
 			socket.emit('receiveMessage',{message:`Hello ${name}\nWelcome back to ChatBox`});
 			socket.broadcast.emit("serverInfo",{message:`${name} has joined the chat.`});
 			onlineUserInfo();
@@ -153,7 +151,7 @@ function newconnection(socket){
 	//ping the device to maintain connection
 	socket.on('appOn',()=>{
 		if(name){
-			console.log(name+" device pinged");
+			console.log(name+"'s device pinged");
 		}
 		socket.emit('appOn');
 	});

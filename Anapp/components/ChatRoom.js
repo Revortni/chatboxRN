@@ -11,7 +11,7 @@ const INFO = '@userInfo';
 
 const {localhost,heroku} = require('./config.json');
 
-class ChatRoom extends React.Component {
+class ChatRoom extends React.PureComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -23,8 +23,8 @@ class ChatRoom extends React.Component {
             connected:false,
             text:"",
             };
-        // this.timeout = "";
-        this.socket = SocketIOClient(localhost);
+        this.timeout = "";    
+        this.socket = SocketIOClient(heroku);
         this.socket.on('connect',()=>this._getInfo());
         this.socket.on('receiveMessage',(data)=>this.receiveMessage(data));      
         this.socket.on('userInfo',(userid)=>{this.setState({userid})});
@@ -33,7 +33,6 @@ class ChatRoom extends React.Component {
         this.socket.on('disconnect',()=>{
             this.serverInfo({message:"You have disconnected."});
             this.setState({connected:false});
-
         });
         this.socket.on('reregister',()=>{
             this.setState({messages:[]});
@@ -49,8 +48,9 @@ class ChatRoom extends React.Component {
     }
 
     componentDidMount(){
+        this.socket.emit('appOn');
         this.interval = setInterval(()=>{
-            this.socket.emit('appOn',{userid:this.state.userid,username:this.state.username});
+            this.socket.emit('appOn');
             this.timeout = setTimeout(()=>{
                 this.setState({connected:false});                
             },2000);
@@ -61,34 +61,35 @@ class ChatRoom extends React.Component {
         clearInterval(this.interval);
     }
 
-    isConnected = () =>{
+    isConnected(){
         this.setState({connected:true});
         clearTimeout(this.timeout);
     }
 
-    reset = () =>{
-        AsyncStorage.setItem('registered',false);
+    reset = async() =>{
+        await AsyncStorage.setItem('registered',"false");
         Alert.alert("The app will now close to reset.Closing app..");
         setTimeout(()=>BackHandler.exitApp(),3000);
     }
 
     _getInfo = async()=>{
-        // this.setState({connected:true});
         try{
             const userInfo = await AsyncStorage.getItem(INFO);
             if (userInfo==null) {
                 this.socket.emit('newUser',{username:this.state.username,email:this.state.email});
                 this.socket.on('userInfo', (userid) => {
-                    data = JSON.stringify({userid:userid,username:this.state.username});
+                    data = JSON.stringify({userid:userid,username:this.state.username,email:this.state.email});
                     AsyncStorage.setItem(INFO, data);
                     this.setState({ userid });
                 });
             }
-            else {
-                info = JSON.parse(userInfo);
-                if(!this.state.username && this.state.username!=info.username){
+            else{
+                let info = JSON.parse(userInfo);
+                if(this.state.username && this.state.username!=info.username){
                     info.username = this.state.username;
                 }
+                let data = JSON.stringify(info);
+                AsyncStorage.setItem(INFO,data);
                 this.socket.emit('oldUser', info);
                 this.setState(info);
             }
@@ -128,8 +129,8 @@ class ChatRoom extends React.Component {
             <View style = {styles.container}>
                 <View style={styles.headbar}>
                     <Text style={styles.headTitle}>{this.state.title}</Text>
-                    <NetworkInfo status={this.state.connected}/>
                 </View>
+                <NetworkInfo status={this.state.connected}/>
                 <MessageList messages ={this.state.messages}/>
                 <View style = {styles.inputArea}>      
                 <Input
@@ -176,7 +177,7 @@ const styles = StyleSheet.create({
     headTitle:{
         alignSelf:'center',
         fontSize:20,
-        color:'#2a2a2a'
+        color:'#2a2a2a',
     },
     inputArea:{
         justifyContent:'center',

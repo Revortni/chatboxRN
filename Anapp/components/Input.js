@@ -16,6 +16,7 @@ const Input = React.forwardRef((props,ref) =>
         blurOnSubmit={false}
         value={props.value}
         ref = {ref}
+        editable = {props.editable}
       />
     </View>
   );

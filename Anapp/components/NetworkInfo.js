@@ -39,54 +39,66 @@ class OnlineSign extends Component {
 }
 
 class NetworkInfo extends PureComponent {
-  constructor(props){
-    super(props);
-    this.state = {
-      isConnected: true,
-      serverConnection:props.status
-    };
-  }
+    constructor(props){
+        super(props);
+        this.state = {
+            isConnected: true,
+            status:props.status
+        };
+    }
+    static getDerivedStateFromProps(nextProps, prevState){
+        if(nextProps.status!==prevState.status){
+            return true
+        }
+        else return null;
+    }
 
-  componentDidMount() {
+    componentDidUpdate(prevProps) {
+        if(prevProps.status!==this.props.status){
+            this.setState({status: this.props.status});
+        }
+    }
+
+    componentDidMount() {
     // NetInfo.fetch().then(state => {
     //     this.setState({isConnected:state.isConnected});
     // });
     // NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
     this.unsubscribe = NetInfo.addEventListener(state => {
         this.setState({isConnected:state.isConnected});
-      });
+        });
     }
 
-  componentWillUnmount() {
+    componentWillUnmount() {
     // NetInfo.isConnected.removeEventListener('connectionChange', this.handleConnectivityChange);
         this.unsubscribe();
     }
 
-  handleConnectivityChange = isConnected => {
-    this.setState({ isConnected });
-  }
-
-  render() {
-    if(!this.state.isConnected){
-        return <OfflineSign info={"No internet connection"}/>;
-    }else if(!this.state.serverConnection){
-        return <OfflineSign info={"Disconnected from server"}/>
+    handleConnectivityChange = isConnected => {
+        this.setState({ isConnected });
     }
-    return <OnlineSign/>;
-  }
+
+    render() {
+        if(!this.state.isConnected){
+            return <OfflineSign info={"No internet connection"}/>;
+        }else if(!this.state.status){
+            return <OfflineSign info={"Disconnected"}/>
+        }
+        return <OnlineSign/>;
+    }
 }
 
 const styles = StyleSheet.create({
   offlineContainer: {
     backgroundColor: '#B52424',
-    height: 25,
+    height: 20,
     flexDirection: 'row',
     alignSelf:"stretch",
-    justifyContent:"center"
+    justifyContent:"center",
   },
   onlineContainer: {
     backgroundColor: '#7FFFD4',
-    height: 25,
+    height: 20,
     flexDirection: 'row',
     alignSelf:"stretch",
     justifyContent:"center"

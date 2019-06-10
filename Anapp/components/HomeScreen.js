@@ -12,10 +12,14 @@ export default class HomeScreen extends Component {
     this.state = {
       registered : false,
       username: '',
-      email:''
-    }; 
-    this.emailInput = React.createRef();
+      email:'',
+      first:false
+    };  
+    // AsyncStorage.clear();
+    this.checkFirstUse();
     this.checkRegistration();
+    this.emailInput = React.createRef();
+    
   }
 
   handleBackPress= () => {
@@ -35,11 +39,27 @@ export default class HomeScreen extends Component {
    } 
 
   componentDidMount(){
-    BackHandler.addEventListener('hardwareBackPress', this.handleBackPress)
-  
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
   }
   componentWillUnmount() {
     BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
+  }
+
+  checkFirstUse = async()=> {
+    try{
+      const first = await AsyncStorage.getItem("firstUse");
+      if(first=="no"){
+        let data = await AsyncStorage.getItem('@userInfo');
+        let content = JSON.parse(data);
+        this.setState({email:content.email});
+      }else{
+        if(first==null){
+          this.setState({first:true});
+        }
+      }
+    } catch(e){
+      alert(e);
+    }
   }
 
   checkRegistration = async()=>{
@@ -63,6 +83,7 @@ export default class HomeScreen extends Component {
     if(this.state.username.length>0){
       if(pattern.test(email)){
         AsyncStorage.setItem("registered","true");
+        AsyncStorage.setItem("firstUse","no");
         this.setState({registered:true});
       } else {
         alert("Please enter a proper email addresss");
@@ -75,7 +96,7 @@ export default class HomeScreen extends Component {
   render() {
     if (this.state.registered) {
       return (
-        <ChatRoom username = {this.state.username} email = {this.state.email} reset={()=>this.checkRegistration()}/>
+        <ChatRoom username = {this.state.username} email = {this.state.email} />
       );
     }
     else {
@@ -102,6 +123,8 @@ export default class HomeScreen extends Component {
               ref={this.emailInput}
               blurOnSubmit={false}
               onSubmitEditing={()=>this.register()}
+              value={this.state.email}
+              editable={this.state.first}
           />
           <Icon.Button 
               name="send" 
