@@ -10,7 +10,7 @@ export default class MessageList extends Component {
         };
     }
     componentDidMount() {
-        this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', 
+        this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow',()=>
           this._keyboardDidShow.bind(this));
       }
       
