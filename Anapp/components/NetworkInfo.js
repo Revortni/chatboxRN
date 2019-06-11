@@ -3,13 +3,19 @@ import { View, Text, StyleSheet } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 
 const OfflineSign = (props) => {
+  if(props.connecting){
+    return (
+      <View style={styles.connecting}>
+        <Text style={styles.onlineText}>{props.info}</Text>
+      </View>
+    );
+  }
   return (
     <View style={styles.offlineContainer}>
       <Text style={styles.offlineText}>{props.info}</Text>
     </View>
-  );
+  )
 }
-
 
 class OnlineSign extends Component {
   constructor(){
@@ -80,8 +86,11 @@ class NetworkInfo extends PureComponent {
 
     render() {
         if(!this.state.isConnected){
-            return <OfflineSign info={"No internet connection"}/>;
-        }else if(!this.state.status){
+            return <OfflineSign info={"No internet connection"}/>
+        }else if(this.state.status==null){
+          return <OfflineSign info={"Connecting.."} connecting={true}/>
+        }
+        else if(!this.state.status){
             return <OfflineSign info={"Disconnected"}/>
         }
         return <OnlineSign/>;
@@ -91,6 +100,13 @@ class NetworkInfo extends PureComponent {
 const styles = StyleSheet.create({
   offlineContainer: {
     backgroundColor: '#B52424',
+    height: 20,
+    flexDirection: 'row',
+    alignSelf:"stretch",
+    justifyContent:"center",
+  },
+  connecting: {
+    backgroundColor: '#00FA9A',
     height: 20,
     flexDirection: 'row',
     alignSelf:"stretch",

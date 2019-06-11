@@ -20,7 +20,7 @@ class ChatRoom extends React.PureComponent {
             username:this.props.username,
             email:this.props.email,
             title:'Gospel',
-            connected:false,
+            connected:null,
             text:"",
             };
         this.timeout = "";    
