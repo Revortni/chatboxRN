@@ -99,7 +99,7 @@ class NetworkInfo extends PureComponent {
 
 const styles = StyleSheet.create({
   offlineContainer: {
-    backgroundColor: '#B52424',
+    backgroundColor: '#CD5C5C',
     height: 20,
     flexDirection: 'row',
     alignSelf:"stretch",

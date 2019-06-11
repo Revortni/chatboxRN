@@ -26,10 +26,10 @@ export default class HomeScreen extends Component {
     Alert.alert(
         'Exit App',
         'Are you sure you want to exit?', [{
-            text: 'Cancel',
+            text: 'No',
             style: 'cancel'
         }, {
-            text: 'OK',
+            text: 'Yes',
             onPress: () => BackHandler.exitApp()
         }, ], {
             cancelable: false
