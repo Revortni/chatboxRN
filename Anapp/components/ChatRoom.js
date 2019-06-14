@@ -24,7 +24,7 @@ class ChatRoom extends React.PureComponent {
             text:"",
             };
         this.timeout = "";    
-        this.socket = SocketIOClient(heroku);
+        this.socket = SocketIOClient(localhost);
         this.socket.on('connect',()=>this._getInfo());
         this.socket.on('receiveMessage',(data)=>this.receiveMessage(data));      
         this.socket.on('userInfo',(userid)=>{this.setState({userid})});
@@ -42,6 +42,17 @@ class ChatRoom extends React.PureComponent {
                 userid:this.state.userid
             });
         });
+        this.socket.on('oldMessages',(data)=>{
+            let messages = data.map(({username,userid,message})=>{
+                if(userid==this.state.userid){
+                    return {username,message,action:"sent"};
+                } else {
+                    return {username,message,action:"rec"};
+                }
+            });
+            this.setState({messages});
+        });
+
         this.socket.on('resetMe',()=>{
             this.reset();
         });
@@ -102,7 +113,7 @@ class ChatRoom extends React.PureComponent {
         let msgs = this.state.messages;
         if(this.state.text){
             msg = this.state.text.trim();
-            this.socket.emit("sendMessage",{message:msg,userid:this.state.userid,username:this.state.username});
+            this.socket.emit("sendMessage",{message:msg,userid:this.state.userid});
             msgs.push({message:msg,action:'sent'});
             this.setState({messages:msgs,text:''});
         }
