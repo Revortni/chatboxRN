@@ -8,10 +8,10 @@ export default class MessageList extends Component {
         this.state = {
             messages:props.messages
         };
+        this.scrollView = React.createRef();
     }
     componentDidMount() {
-        this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow',()=>
-          this._keyboardDidShow.bind(this));
+        this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow',()=>this._keyboardDidShow());
       }
       
     componentWillUnmount() {
@@ -19,7 +19,7 @@ export default class MessageList extends Component {
         this.keyboardDidHideListener.remove();
         }
     
-    _keyboardDidShow() {
+    _keyboardDidShow = ()=>{
         this.scrollView.scrollToEnd({ animated: false });
     }
     
