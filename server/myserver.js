@@ -72,7 +72,7 @@ function newconnection(socket){
 			} else {
 				socket.emit('receiveMessage',{message:`Someone else is online right now. Try saying hi.`});
 			}
-		},1500);
+		},500);
 	}
 
 	onlineUserInfo = () => {
@@ -88,7 +88,7 @@ function newconnection(socket){
 			} else {
 				socket.emit('serverInfo',{message:(count==0)?'Nobody is online':`${count} users are online`});
 			}
-		},1500);
+		},1000);
 	}
 
 	//remove user from onlineuser list
