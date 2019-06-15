@@ -1,6 +1,6 @@
 let mongoose = require('mongoose');
-const server = '127.0.0.1:27017';
-const message_database = 'chatbox'; 
+const server = process.env.SERVER||'127.0.0.1:27017';
+const message_database = process.env.DATABASE||'chatbox'; 
 let msgModel = require('../models/message');
 let instance = null;
 
@@ -32,8 +32,7 @@ class MsgDatabase{
         let message = new msgModel(data);
         try{ 
             await message.save();
-            this._messages = await this.fetchMessages();
-            return Promise.resolve(this._messages);
+            return Promise.resolve();
         } catch(err){
             return Promise.reject(err);
         }

@@ -1,6 +1,6 @@
 let mongoose = require('mongoose');
-const server = '127.0.0.1:27017';
-const user_database = 'chatbox';
+const server = process.env.SERVER||'127.0.0.1:27017';
+const user_database = process.env.DATABASE||'chatbox'; 
 let userModel = require('../models/user');
 let instance = null
 //Mongo database

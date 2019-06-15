@@ -9,7 +9,7 @@ import NetworkInfo from './NetworkInfo';
 
 const INFO = '@userInfo';
 
-const {localhost,heroku} = require('./config.json');
+const {localhost,heroku,rltheroku} = require('./config.json');
 
 class ChatRoom extends React.PureComponent {
     constructor(props) {
@@ -24,7 +24,7 @@ class ChatRoom extends React.PureComponent {
             text:"",
             };
         this.timeout = "";    
-        this.socket = SocketIOClient(localhost);
+        this.socket = SocketIOClient(rltheroku);
         this.socket.on('connect',()=>this._getInfo());
         this.socket.on('receiveMessage',(data)=>this.receiveMessage(data));      
         this.socket.on('userInfo',(userid)=>{this.setState({userid})});
