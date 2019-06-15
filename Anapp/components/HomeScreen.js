@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { StyleSheet,BackHandler, Alert, Text, View} from 'react-native';
+import { StyleSheet,BackHandler, Alert, Text, ActivityIndicator, View} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import Input from './Input';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -13,7 +13,8 @@ export default class HomeScreen extends Component {
       registered : false,
       username: '',
       email:'',
-      first:false
+      first:false,
+      loaded:false
     };  
     // AsyncStorage.clear();
     this.checkFirstUse();
@@ -69,7 +70,7 @@ export default class HomeScreen extends Component {
         AsyncStorage.setItem("registered","false");
       }else{
         if(registered=="true"){
-          this.setState({registered:true});
+          this.setState({registered:true,loaded:true});
         }
       }
     } catch(e){
@@ -84,7 +85,7 @@ export default class HomeScreen extends Component {
       if(pattern.test(email)){
         AsyncStorage.setItem("registered","true");
         AsyncStorage.setItem("firstUse","no");
-        this.setState({registered:true});
+        this.setState({registered:true,loaded:true});
       } else {
         alert("Please enter a proper email addresss");
       }
@@ -95,8 +96,15 @@ export default class HomeScreen extends Component {
 
   render() {
     if (this.state.registered) {
+      if(this.state.loaded){
+        return (
+          <ChatRoom username = {this.state.username} email = {this.state.email} />
+        );
+      }
       return (
-        <ChatRoom username = {this.state.username} email = {this.state.email} />
+        <View style={styles.spinner}>
+          <ActivityIndicator size={40} color="87cefa"/>
+        </View>
       );
     }
     else {
@@ -156,5 +164,10 @@ const styles = StyleSheet.create({
     backgroundColor:'#F0FaFa',
     margin:10,
     padding:20,
+  },
+  spinner:{
+    alignContent:'center',
+    justifyContent:'center',
+    flex:1,
   }
 });
