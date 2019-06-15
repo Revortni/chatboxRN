@@ -1,5 +1,5 @@
 import React from 'react';
-import {Alert, View, BackHandler, StyleSheet,Text} from 'react-native';
+import {Alert, View, BackHandler, StyleSheet,Text, Vibration} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import SocketIOClient from 'socket.io-client/dist/socket.io.js';
 import Input from './Input';
@@ -109,7 +109,7 @@ class ChatRoom extends React.PureComponent {
         }
     }
 
-    sendMessage = () =>{
+    sendMessage = () => {
         let msgs = this.state.messages;
         if(this.state.text){
             msg = this.state.text.trim();
@@ -125,7 +125,9 @@ class ChatRoom extends React.PureComponent {
         this.setState({
             messages:msgs
         });
+        Vibration.vibrate(100);
     }
+
 
     serverInfo(data){
         let msgs = this.state.messages;
