@@ -20,7 +20,6 @@ export default class HomeScreen extends Component {
     this.checkFirstUse();
     this.checkRegistration();
     this.emailInput = React.createRef();
-    
   }
 
   handleBackPress= () => {
@@ -70,9 +69,10 @@ export default class HomeScreen extends Component {
         AsyncStorage.setItem("registered","false");
       }else{
         if(registered=="true"){
-          this.setState({registered:true,loaded:true});
+          this.setState({registered:true});
         }
       }
+      setTimeout(()=>this.setState({loaded:true}),3000);
     } catch(e){
       alert(e);
     }
@@ -85,7 +85,7 @@ export default class HomeScreen extends Component {
       if(pattern.test(email)){
         AsyncStorage.setItem("registered","true");
         AsyncStorage.setItem("firstUse","no");
-        this.setState({registered:true,loaded:true});
+        this.setState({registered:true});
       } else {
         alert("Please enter a proper email addresss");
       }
