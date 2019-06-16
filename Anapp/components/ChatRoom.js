@@ -11,7 +11,7 @@ const INFO = '@userInfo';
 
 const {localhost,heroku,rltheroku} = require('./config.json');
 
-class ChatRoom extends React.PureComponent {
+class ChatRoom extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
