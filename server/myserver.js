@@ -7,11 +7,12 @@ var io=require('socket.io')(http,{
 	pingTimeout: 2000,
 });
 
-// var pinger = require("http");
-// setInterval(function() {
-// 	console.log("Pinged server")
-//     pinger.get("https://guarded-fjord-84140.herokuapp.com");
-// }, 30*60*1000); // every 5 minutes (300000)
+var pinger = require("axios");
+setInterval(function() {
+	console.log("Pinged server")
+    pinger.get("https://guarded-fjord-84140.herokuapp.com").then().catch(()=>console.log(err));
+}, 30*60*1000); // every 30mins
+
 
 var uuid = require('uuid/v4');
 
