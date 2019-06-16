@@ -119,13 +119,14 @@ class ChatRoom extends React.PureComponent {
         }
     }
     
-    receiveMessage({message,username=0}){
+    receiveMessage=({message,username=0})=>{
         let msgs = this.state.messages;
         msgs.push({message:message,action:'rec',username:username});
         this.setState({
             messages:msgs
         });
-        Vibration.vibrate(100);
+        // alert(this.state.messages[this.state.messages.length-1].message);
+        Vibration.vibrate([0,300,200,300]);
     }
 
 
