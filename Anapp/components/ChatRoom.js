@@ -11,7 +11,7 @@ const INFO = '@userInfo';
 
 const {localhost,heroku,rltheroku} = require('./config.json');
 
-class ChatRoom extends React.Component {
+class ChatRoom extends React.PureComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -120,7 +120,7 @@ class ChatRoom extends React.Component {
     }
     
     receiveMessage=({message,username=0})=>{
-        let msgs = this.state.messages;
+        let msgs = [...this.state.messages];
         msgs.push({message:message,action:'rec',username:username});
         this.setState({
             messages:msgs
@@ -131,7 +131,7 @@ class ChatRoom extends React.Component {
 
 
     serverInfo(data){
-        let msgs = this.state.messages;
+        let msgs = [...this.state.messages];
         msgs.push({message:data.message,action:'info'});
         this.setState({
             message:msgs
