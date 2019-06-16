@@ -16,7 +16,6 @@ export default class MessageList extends Component {
       
     componentWillUnmount() {
         this.keyboardDidShowListener.remove();
-        this.keyboardDidHideListener.remove();
         }
     
     _keyboardDidShow = ()=>{
