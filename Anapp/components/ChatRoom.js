@@ -152,6 +152,7 @@ class ChatRoom extends React.Component {
             msg = this.state.text.trim();
             this.socket.emit("sendMessage",{message:msg,userid:this.state.userid});
             this.pushMsg({message:msg,action:'sent'});
+            this.setState({text:""})
         }
     }
     
