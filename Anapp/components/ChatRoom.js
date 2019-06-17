@@ -11,7 +11,7 @@ const INFO = '@userInfo';
 
 const {localhost,heroku,rltheroku} = require('./config.json');
 
-class ChatRoom extends React.PureComponent {
+class ChatRoom extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -22,8 +22,12 @@ class ChatRoom extends React.PureComponent {
             title:'Gospel',
             connected:null,
             text:"",
+            typing:false
             };
-        this.timeout = "";    
+        this.pushMsg = this.pushMsg.bind(this);
+        this.timeout = "";
+        this.timer = null;    
+        this.typer = [];
         this.socket = SocketIOClient(rltheroku);
         this.socket.on('connect',()=>this._getInfo());
         this.socket.on('receiveMessage',(data)=>this.receiveMessage(data));      
@@ -33,14 +37,6 @@ class ChatRoom extends React.PureComponent {
         this.socket.on('disconnect',()=>{
             this.serverInfo({message:"You have disconnected."});
             this.setState({connected:false});
-        });
-        this.socket.on('reregister',()=>{
-            this.setState({messages:[]});
-            this.socket.emit('reregister',{
-                username:this.state.username,
-                email:this.state.email,
-                userid:this.state.userid
-            });
         });
         this.socket.on('oldMessages',(data)=>{
             let messages = data.map(({username,userid,message})=>{
@@ -52,10 +48,36 @@ class ChatRoom extends React.PureComponent {
             });
             this.setState({messages});
         });
-
         this.socket.on('resetMe',()=>{
             this.reset();
         });
+        this.socket.on('typing',({username,typing})=>{
+            if(typing && !this.typer.includes(username)){
+                this.typer.push(username);
+            }else if(!typing){
+                this.typer.splice(this.typer.indexOf(username),1);
+            }
+            let users;
+            try{
+                users = this.typer.length==1? username:this.typer.reduce((a,x)=>{
+                 return a+', '+x;
+                });
+            }catch{
+                users=username;
+            }
+            clearTimeout(this.timer);
+            let msgs = this.state.messages;
+            if (!this.state.typing){
+                msgs.push({message:". . .",action:'rec',username:users});
+            }
+            this.setState({typing:true,messages:msgs});
+            this.timer = setTimeout(()=>{
+                if(this.state.typing){
+                let message = this.state.messages;
+                message.pop();
+                this.setState({typing:false,messages:message});}
+            },500);
+        }); 
     }
 
     componentDidMount(){
@@ -108,37 +130,60 @@ class ChatRoom extends React.PureComponent {
             alert(e);
         }
     }
+    pushMsg = (data)=>{
+        let msgs = this.state.messages;
+        if(!this.state.typing){
+            msgs.push(data);
+            this.setState({
+                messages:msgs
+            });
+        } else {
+            let typing = msgs.pop();
+            msgs.push(data);
+            msgs.push(typing);
+            this.setState({
+                messages:msgs
+            });
+        }
+    }
 
     sendMessage = () => {
-        let msgs = this.state.messages;
         if(this.state.text){
             msg = this.state.text.trim();
             this.socket.emit("sendMessage",{message:msg,userid:this.state.userid});
-            msgs.push({message:msg,action:'sent'});
-            this.setState({messages:msgs,text:''});
+            this.pushMsg({message:msg,action:'sent'});
         }
     }
     
     receiveMessage=({message,username=0})=>{
-        let msgs = [...this.state.messages];
-        msgs.push({message:message,action:'rec',username:username});
-        this.setState({
-            messages:msgs
-        });
+        this.pushMsg({message:message,action:'rec',username:username});
         // alert(this.state.messages[this.state.messages.length-1].message);
         Vibration.vibrate([0,300,200,300]);
     }
 
 
-    serverInfo(data){
-        let msgs = [...this.state.messages];
-        msgs.push({message:data.message,action:'info'});
-        this.setState({
-            message:msgs
-        });
+    serverInfo({message}){
+        this.pushMsg({message:message,action:'info'});
+    }
+
+    _keyPress = () =>{
+        clearTimeout(this.timer);
+        this.socket.emit('typing',{userid:this.state.userid,typing:true});
+        this.timer = setTimeout(
+            ()=>this.socket.emit("typing",{
+                userid:this.userid,typing:false
+            }),500);
     }
 
     render() {
+        // let typers;
+        // if(this.state.typing.length){
+        //     typers = this.typing.reduce((a,x)=>{
+        //         return a+' ,'+x;
+        //     })+(this.typing.length==1?" is":" are")+" typing";
+        // } else {
+        //     typers ="Noone is fucking typing absolutely noone" ;
+        // }
         return(
             <View style = {styles.container}>
                 <View style={styles.headbar}>
@@ -146,22 +191,30 @@ class ChatRoom extends React.PureComponent {
                 </View>
                 <NetworkInfo status={this.state.connected}/>
                 <MessageList messages ={this.state.messages}/>
+                {/* <View style = {styles.typing}>
+                    <Text style = {{alignSelf:'center'}}>{typers}</Text>
+                </View> */}
                 <View style = {styles.inputArea}>      
-                <Input
-                    placeholder="Aa"
-                    onChangeText={text=>this.setState({text})}
-                    style={styles.sendMsg}
-                    value={this.state.text}
-                    multiline={true}
-                />
-                <Icon.Button 
-                    name="send" 
-                    onPress={()=>this.sendMessage()}
-                    backgroundColor='#87cefa'
-                    size={24}
-                    style={{padding:13,paddingTop:8,paddingLeft:8}}
-                    borderRadius={400}
-                />
+                    <Input
+                        placeholder="Aa"
+                        onChangeText={
+                            text=>{
+                                this.setState({text});
+                                this._keyPress();
+                            }
+                        }
+                        style={styles.sendMsg}
+                        value={this.state.text}
+                        multiline={true}
+                    />
+                    <Icon.Button 
+                        name="send" 
+                        onPress={()=>this.sendMessage()}
+                        backgroundColor='#87cefa'
+                        size={24}
+                        style={{padding:13,paddingTop:8,paddingLeft:8}}
+                        borderRadius={400}
+                    />
                 </View>
             </View>
         );
@@ -200,9 +253,11 @@ const styles = StyleSheet.create({
         padding:10,
         paddingBottom:5
     },
-    messageContainer:{
-        marginTop:5,
+    typing:{
+        flex:1,
+        justifyContent:'center',
         marginBottom:10,
+        paddingTop:5
     }
 });
 

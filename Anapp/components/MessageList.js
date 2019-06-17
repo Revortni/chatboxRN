@@ -58,6 +58,6 @@ export default class MessageList extends Component {
     const styles = StyleSheet.create({
         messageContainer:{
             marginTop:5,
-            marginBottom:5,
+            marginBottom:10,
         }
     });

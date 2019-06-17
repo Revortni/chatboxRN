@@ -16,7 +16,7 @@ const Message = (props) =>{
         content = <Text style={styles.username}>{props.username}</Text>;
       }
       return(
-        <View>
+        <View style={{maxWidth:220}}>
           {content}
           <View style={styles.rec}>
             <Text style={styles.text}>{props.content}</Text>

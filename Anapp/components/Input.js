@@ -17,6 +17,7 @@ const Input = React.forwardRef((props,ref) =>
         value={props.value}
         ref = {ref}
         editable = {props.editable}
+        onKeyPress={props.onKeyPress}
       />
     </View>
   );

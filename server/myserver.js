@@ -10,7 +10,7 @@ var io=require('socket.io')(http,{
 var pinger = require("axios");
 setInterval(function() {
 	console.log("Pinged server")
-    pinger.get("https://guarded-fjord-84140.herokuapp.com").then().catch(()=>console.log(err));
+    pinger.get("https://guarded-fjord-84140.herokuapp.com").then().catch((err)=>console.log(err));
 }, 30*60*1000); // every 30mins
 
 
@@ -84,16 +84,20 @@ function newconnection(socket){
 
 	onlineUserInfo = () => {
 		setTimeout(()=>{
-			let count = onlineusers.length-1;
-			if(count<4 & count>0){
-				let users = onlineusers.filter(x=>x!=id);
-				let others =users.map(x=>usermap[x]);
-				let msg = others.reduce((a,x)=>{
-					return a+' ,'+x;
-				})+(count==1?" is":" are")+" online";
-				socket.emit('serverInfo',{message:msg});
-			} else {
-				socket.emit('serverInfo',{message:(count==0)?'Nobody is online':`${count} users are online`});
+			try{
+				let count = onlineusers.length-1;
+				if(count<4 & count>0){
+					let users = onlineusers.filter(x=>x!=id);
+					let others =users.map(x=>usermap[x]);
+					let msg = others.reduce((a,x)=>{
+						return a+' ,'+x;
+					})+(count==1?" is":" are")+" online";
+					socket.emit('serverInfo',{message:msg});
+				} else {
+					socket.emit('serverInfo',{message:(count==0)?'Nobody is online':`${count} users are online`});
+				}
+			}catch(err){
+				return null;
 			}
 		},1000);
 	}
@@ -133,22 +137,6 @@ function newconnection(socket){
 		disconnect();
 	});
 
-	// socket.on('reregister',({username,email,userid})=>{
-	// 	let msg = "It appears the server restarted. We are registering you again."
-    // 	socket.emit("receiveMessage",{message:msg});
-	// 	id = userid;
-	// 	name = username;
-	// 	mail = email;
-	// 	console.log(`User ${name} connected`);
-	// 	allusers.push(id);
-	// 	onlineusers.push(id);
-	// 	usermap[id]={username,mail,id};
-	// 	socket.emit('receiveMessage',{message:`Hello ${name}\nYou have been reregistered successfully`});
-	// 	socket.broadcast.emit("serverInfo",{message:`${name} has joined the chat.`});
-	// 	onlineUserInfo();
-	// 	disconnect();
-	// });
-
 	//when a old user connects
 	socket.on('oldUser',({userid,username})=>{
 		try{
@@ -186,14 +174,10 @@ function newconnection(socket){
 		msgdb.addMessage(data).catch((err)=>console.error(err));		
 	});
 
-	// //when user starts to type into the input panel
-	// socket.on("typing",(val)=>{
-	// 	var data={
-	// 		show:val,// show or hide typing
-	// 		id:userlist[socket.id],
-	// 	};
-	// 	socket.broadcast.emit("typing",data)
-	// });
+	//when user starts to type into the input panel
+	socket.on("typing",({userid,typing})=>{
+		socket.broadcast.emit("typing",{username:usermap[userid],typing})
+	});
 
 	//response for when the device pings to maintain connection
 	socket.on('appOn',()=>{
@@ -205,6 +189,10 @@ function newconnection(socket){
 }
 
 app.set( 'port', ( process.env.PORT || 3000 ));
+
+app.get('/',function(req,res){
+	res.send("Server's up.");
+});
 
 http.listen(app.get( 'port' ),async function(){
 	await runDatabase();
