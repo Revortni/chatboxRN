@@ -52,14 +52,14 @@ class ChatRoom extends React.Component {
             this.reset();
         });
         this.socket.on('typing',({username,typing})=>{
+            let users;
+            try{
             if(typing && !this.typer.includes(username)){
                 this.typer.push(username);
             }else if(!typing){
                 this.typer.splice(this.typer.indexOf(username),1);
             }
-            let users;
-            try{
-                users = this.typer.length==1? username:this.typer.reduce((a,x)=>{
+            users = this.typer.length==1? username:this.typer.reduce((a,x)=>{
                  return a+', '+x;
                 });
             }catch{
