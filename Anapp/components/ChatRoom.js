@@ -27,7 +27,7 @@ class ChatRoom extends React.Component {
         this.timeout = "";
         this.timer = null;    
         this.typer = [];
-        this.socket = SocketIOClient(localhost);
+        this.socket = SocketIOClient(rltheroku);
         this.socket.on('connect',()=>this._getInfo());
         this.socket.on('receiveMessage',(data)=>this.receiveMessage(data));
         this.socket.on('serverInfo',(data)=>this.serverInfo(data));  
