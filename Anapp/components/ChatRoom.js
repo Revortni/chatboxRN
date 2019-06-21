@@ -27,10 +27,9 @@ class ChatRoom extends React.Component {
         this.timeout = "";
         this.timer = null;    
         this.typer = [];
-        this.socket = SocketIOClient(rltheroku);
+        this.socket = SocketIOClient(localhost);
         this.socket.on('connect',()=>this._getInfo());
-        this.socket.on('receiveMessage',(data)=>this.receiveMessage(data));      
-        this.socket.on('userInfo',(userid)=>{this.setState({userid})});
+        this.socket.on('receiveMessage',(data)=>this.receiveMessage(data));
         this.socket.on('serverInfo',(data)=>this.serverInfo(data));  
         this.socket.on('appOn',()=>this.isConnected());
         this.socket.on('disconnect',()=>{
@@ -99,10 +98,25 @@ class ChatRoom extends React.Component {
         clearTimeout(this.timeout);
     }
 
-    reset = async() =>{
-        await AsyncStorage.setItem('registered',"false");
-        Alert.alert("The app will now close to reset.Closing app..");
-        setTimeout(()=>BackHandler.exitApp(),3000);
+    reset = () =>{
+        Alert.alert(
+            'Rename your account',
+            'Are you sure?', [{
+                text: 'No',
+                style: 'cancel'
+            }, {
+                text: 'Yes',
+                onPress: () => {
+                    this.socket.emit("acceptRename");
+                    AsyncStorage.setItem('registered',"false");
+                    Alert.alert("The app will now close to reset.Closing app..");
+                    setTimeout(()=>BackHandler.exitApp(),3000);
+                }
+            }, ], {
+                cancelable: false
+            }
+         )
+        return;
     }
 
     _getInfo = async()=>{
@@ -130,6 +144,7 @@ class ChatRoom extends React.Component {
             alert(e);
         }
     }
+
     pushMsg = (data)=>{
         let msgs = this.state.messages;
         if(!this.state.typing){

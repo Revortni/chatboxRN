@@ -67,7 +67,7 @@ export default class HomeScreen extends Component {
     try{
       const registered = await AsyncStorage.getItem("registered");
       if (registered==null) {
-        AsyncStorage.setItem("registered","false");
+        await AsyncStorage.setItem("registered","false");
       }else{
         if(registered=="true"){
           this.setState({registered:true});
@@ -79,13 +79,13 @@ export default class HomeScreen extends Component {
     }
   }
 
-  register = () => {
+  register = async() => {
     const pattern = /^[\w\.-]+@[\w\.-]+$/i
     let email = this.state.email;
     if(this.state.username.length>0){
       if(pattern.test(email)){
-        AsyncStorage.setItem("registered","true");
-        AsyncStorage.setItem("firstUse","no");
+        await AsyncStorage.setItem("registered","true");
+        await AsyncStorage.setItem("firstUse","no");
         this.setState({registered:true});
       } else {
         alert("Please enter a proper email addresss");

@@ -7,10 +7,12 @@ var io=require('socket.io')(http,{
 	pingTimeout: 2000,
 });
 
+// require('dotenv').config();
+
 var pinger = require("axios");
 setInterval(function() {
 	console.log("Pinged server")
-    pinger.get("https://guarded-fjord-84140.herokuapp.com").then().catch((err)=>console.log(err));
+    pinger.get(`${process.env.HOST}`||"http://localhost:3000").then().catch((err)=>console.log(err));
 }, 30*60*1000); // every 30mins
 
 
@@ -138,11 +140,12 @@ function newconnection(socket){
 	});
 
 	//when a old user connects
-	socket.on('oldUser',({userid,username})=>{
+	socket.on('oldUser',async({userid,username})=>{
 		try{
 			id = userid;
 			if(usermap[id]!=username){
 				usermap[id]=username;
+				await userdb.renameUser({userid,username});
 			}
 			name = usermap[id];
 			onlineusers.push(id);
@@ -159,13 +162,15 @@ function newconnection(socket){
 	//when user sends a message
 	socket.on('sendMessage',async function(data){
 		console.log(data);
-		if(data.message=="!resetMe"){
+		if(data.message=="!resetMe$"){
 			socket.emit("resetMe");
-			removeuser(onlineusers,id);
-			removeuser(allusers,id);
-			console.log('User '+usermap[id]+' reset');
-			delete usermap[id];
-			socket.disconnect();
+			socket.on("acceptRename",()=>{
+				removeuser(onlineusers,id);
+				removeuser(allusers,id);
+				console.log('User '+usermap[id]+' reset');
+				delete usermap[id];
+				socket.disconnect();
+			});
 			return;
 		}
 		let temp = {username:usermap[data.userid],message:data.message,userid:data.userid};

@@ -19,7 +19,7 @@ class MsgDatabase{
 		return mongoose.connect(`mongodb://${server}/${message_database}`,{useNewUrlParser: true})
             .then(async()=>{
                 await this.fetchMessages();
-                console.log('message database connection successful');
+                console.log('Message database connection successful');
                 return Promise.resolve(this._messages);                
             })
 			.catch(err =>{

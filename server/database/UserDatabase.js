@@ -49,15 +49,16 @@ class UserDatabase{
         }  
     }
 
-    renameUser({userid,username}){
-        userModel.findOneAndUpdate({userid},{userid,username},function(err,doc){
+    async renameUser({userid,username}){
+        await userModel.findOneAndUpdate({userid},{userid,username},function(err,doc){
             if(err){
                 console.error(err);
-                return;
+                return Promise.reject();
             }
             doc.save()
             console.log("Renamed Successful");
         });
+        return Promise.resolve();
     }
 
     static close(){
