@@ -19,15 +19,16 @@ const Message = (props) =>{
         <View style={{maxWidth:220}}>
           {content}
           <View style={styles.rec}>
-            <Text style={styles.text}>{props.content}</Text>
+            <Text style={styles.text}>{props.content}</Text>        
           </View>
         </View>
       );
     } 
-    else {
+    else if (props.type=="info") {
+      let text =<Text style={styles.infoTextItalic}>{props.content}</Text>
       return(
         <View style={styles.info}>
-          <Text style={styles.infoText}>{props.content}</Text>
+          {text}
         </View>
       );
     }
@@ -50,7 +51,6 @@ const styles = StyleSheet.create({
   },
   rec:{
     backgroundColor:'#98fb98',
-    color:'#010101',
     paddingTop:8,
     paddingLeft:15,
     paddingRight:15,
@@ -69,12 +69,17 @@ const styles = StyleSheet.create({
     marginBottom:2
   },
   infoText:{
-    fontSize:12,
-    color:'#87cefa'
+    fontSize:13,
+    color:'#87cefa',
+  },
+  infoTextItalic:{
+    fontSize:13,
+    color:'#87cefa',
+    fontStyle:"italic"
   },
   text:{
     fontSize:15,
-    color:'#2a2a2a'
+    color:'#1A1A1A',
   },
   username:{
     marginLeft:15,
