@@ -91,7 +91,7 @@ class ChatRoom extends React.Component {
     }
 
     componentWillUnmount(){
-        // clearInterval(this.interval);
+        clearInterval(this.interval);
     }
 
     isConnected(){

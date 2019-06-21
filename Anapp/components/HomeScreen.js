@@ -1,11 +1,11 @@
-import React, {Component} from 'react';
+import React, {Component, PureComponent} from 'react';
 import { StyleSheet,BackHandler, Alert, Text, ActivityIndicator, View} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import Input from './Input';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ChatRoom from './ChatRoom';
 
-export default class HomeScreen extends Component {
+export default class HomeScreen extends PureComponent {
 
   constructor(){
     super();

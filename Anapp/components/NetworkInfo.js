@@ -44,7 +44,7 @@ class OnlineSign extends Component {
   }
 }
 
-class NetworkInfo extends PureComponent {
+class NetworkInfo extends Component {
     constructor(props){
         super(props);
         this.state = {
@@ -106,14 +106,14 @@ const styles = StyleSheet.create({
     justifyContent:"center",
   },
   connecting: {
-    backgroundColor: '#00FA9A',
+    backgroundColor: '#FFEE93',
     height: 20,
     flexDirection: 'row',
     alignSelf:"stretch",
     justifyContent:"center",
   },
   onlineContainer: {
-    backgroundColor: '#7FFFD4',
+    backgroundColor: '#71F79F',
     height: 20,
     flexDirection: 'row',
     alignSelf:"stretch",
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     color:"#fff",
   },
   onlineText:{
-    color:"#000",
+    color:"#4F6367",
   },
 });
 
