@@ -1,12 +1,11 @@
 import React from 'react';
-import {Alert, View, BackHandler, StyleSheet,Text, Vibration} from 'react-native';
+import {Alert, View, BackHandler, Button, StyleSheet, Text, TouchableOpacity, Vibration} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import SocketIOClient from 'socket.io-client/dist/socket.io.js';
 import Input from './Input';
 import MessageList from './MessageList';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import NetworkInfo from './NetworkInfo';
-
+import Icon from 'react-native-vector-icons/FontAwesome'
 const INFO = '@userInfo';
 
 const {localhost,heroku,rltheroku} = require('./config.json');
@@ -68,7 +67,8 @@ class ChatRoom extends React.Component {
             clearTimeout(this.timer);
             let msgs = this.state.messages;
             if (!this.state.typing){
-                msgs.push({message:". . .",action:'rec',username:users});
+                let isare = (this.typer.length>1)?" are":" is";
+                msgs.push({message:users+isare+" typing . . .",action:'info',italic:true});
             }
             this.setState({typing:true,messages:msgs});
             this.timer = setTimeout(()=>{
@@ -76,7 +76,7 @@ class ChatRoom extends React.Component {
                 let message = this.state.messages;
                 message.pop();
                 this.setState({typing:false,messages:message});}
-            },500);
+            },300);
         }); 
     }
 
@@ -91,7 +91,7 @@ class ChatRoom extends React.Component {
     }
 
     componentWillUnmount(){
-        clearInterval(this.interval);
+        // clearInterval(this.interval);
     }
 
     isConnected(){
@@ -177,14 +177,7 @@ class ChatRoom extends React.Component {
     }
 
     render() {
-        // let typers;
-        // if(this.state.typing.length){
-        //     typers = this.typing.reduce((a,x)=>{
-        //         return a+' ,'+x;
-        //     })+(this.typing.length==1?" is":" are")+" typing";
-        // } else {
-        //     typers ="Noone is fucking typing absolutely noone" ;
-        // }
+    
         return(
             <View style = {styles.container}>
                 <View style={styles.headbar}>
@@ -192,9 +185,6 @@ class ChatRoom extends React.Component {
                 </View>
                 <NetworkInfo status={this.state.connected}/>
                 <MessageList messages ={this.state.messages}/>
-                {/* <View style = {styles.typing}>
-                    <Text style = {{alignSelf:'center'}}>{typers}</Text>
-                </View> */}
                 <View style = {styles.inputArea}>      
                     <Input
                         placeholder="Aa"
@@ -208,14 +198,12 @@ class ChatRoom extends React.Component {
                         value={this.state.text}
                         multiline={true}
                     />
-                    <Icon.Button 
-                        name="send" 
+                    <TouchableOpacity 
+                        style={styles.send}
                         onPress={()=>this.sendMessage()}
-                        backgroundColor='#87cefa'
-                        size={24}
-                        style={{padding:13,paddingTop:8,paddingLeft:8}}
-                        borderRadius={400}
-                    />
+                    >
+                        <Icon name='send' size={25} color="#fff"/>
+                    </TouchableOpacity>
                 </View>
             </View>
         );
@@ -252,13 +240,18 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         backgroundColor:'#87CEFA',
         padding:10,
-        paddingBottom:5
+        paddingBottom:10,
+        alignItems:"center"
     },
     typing:{
         flex:1,
         justifyContent:'center',
         marginBottom:10,
         paddingTop:5
+    },
+    send:{
+        marginLeft:5,
+        marginRight:20
     }
 });
 
