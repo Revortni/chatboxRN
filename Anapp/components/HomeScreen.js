@@ -5,7 +5,7 @@ import Input from './Input';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ChatRoom from './ChatRoom';
 
-export default class HomeScreen extends PureComponent {
+export default class HomeScreen extends Component {
 
   constructor(){
     super();
