@@ -10,13 +10,14 @@ export default class MessageList extends Component {
         };
         this.scrollView = React.createRef();
     }
+    
     componentDidMount() {
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow',()=>this._keyboardDidShow());
-      }
+    }
       
     componentWillUnmount() {
         this.keyboardDidShowListener.remove();
-        }
+    }
     
     _keyboardDidShow = ()=>{
         this.scrollView.scrollToEnd({ animated: false });
@@ -45,7 +46,7 @@ export default class MessageList extends Component {
                         {this.state.messages.map((x,i)=>{
                             if(x.username!=lastsender){
                                 lastsender=x.username
-                                return(<Message type={x.action} content={x.message} username={x.username} key={i}/>);
+                                return(<Message type={x.action} content={x.message} username={x.username} key={i} italic={x.italic}/>);
                             }                            
                             return(<Message type={x.action} content={x.message} key={i}/>)
                         })}
