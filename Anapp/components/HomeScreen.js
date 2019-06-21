@@ -14,7 +14,8 @@ export default class HomeScreen extends Component {
       username: '',
       email:'',
       first:false,
-      loaded:false
+      loaded:false,
+      test:false
     };  
     // AsyncStorage.clear();
     this.checkFirstUse();
@@ -95,57 +96,63 @@ export default class HomeScreen extends Component {
   }
 
   render() {
-    if (this.state.registered) {
-      if(this.state.loaded){
-        return (
-          <ChatRoom username = {this.state.username} email = {this.state.email} />
+    if(this.state.loaded){
+      if (this.state.registered) {
+        
+          return (
+            <ChatRoom username = {this.state.username} email = {this.state.email} />
+          );
+        }
+      else {
+        return(
+          <View style = {styles.container}>
+            <Input
+                placeholder="Enter a username"
+                onChangeText={username=>this.setState({username})}
+                style={styles.input}
+                blurOnSubmit = {true}
+                onSubmitEditing={()=>this.emailInput.current.focus()}
+                multiline={false}
+                returnKeyType='next'
+                blurOnSubmit={false}
+                autoFocus={true}
+            />
+            <Input
+                placeholder="Enter your Email"
+                onChangeText={email=>this.setState({email})}
+                style={styles.input}
+                blurOnSubmit = {true}
+                multiline={false}
+                returnKeyType='go'
+                ref={this.emailInput}
+                blurOnSubmit={false}
+                onSubmitEditing={()=>this.register()}
+                value={this.state.email}
+                editable={this.state.first}
+            />
+            <Icon.Button 
+                name="send" 
+                onPress={()=>this.register()}
+                backgroundColor="#F5FCFF"
+                color='#87cefa'
+                size={45}
+                style={{padding:13}}
+                borderRadius={400}
+            />
+          </View>
         );
       }
-      return (
-        <View style={styles.spinner}>
-          <ActivityIndicator size={40} color="87cefa"/>
-        </View>
-      );
     }
-    else {
-      return(
-        <View style = {styles.container}>
-          <Input
-              placeholder="Enter a username"
-              onChangeText={username=>this.setState({username})}
-              style={styles.input}
-              blurOnSubmit = {true}
-              onSubmitEditing={()=>this.emailInput.current.focus()}
-              multiline={false}
-              returnKeyType='next'
-              blurOnSubmit={false}
-              autoFocus={true}
-          />
-          <Input
-              placeholder="Enter your Email"
-              onChangeText={email=>this.setState({email})}
-              style={styles.input}
-              blurOnSubmit = {true}
-              multiline={false}
-              returnKeyType='go'
-              ref={this.emailInput}
-              blurOnSubmit={false}
-              onSubmitEditing={()=>this.register()}
-              value={this.state.email}
-              editable={this.state.first}
-          />
-          <Icon.Button 
-              name="send" 
-              onPress={()=>this.register()}
-              backgroundColor="#F5FCFF"
-              color='#87cefa'
-              size={45}
-              style={{padding:13}}
-              borderRadius={400}
-          />
+    return (
+      <View style = {styles.loadingContainer}>
+        <View style = {styles.loadingTitle}>
+          <Text style = {styles.loadingTitleText}>ChatRoom</Text>
+          <View style={styles.spinner}>
+           <ActivityIndicator size={40} color="#F3EFE0"/>
+          </View>
         </View>
-      );
-    }
+      </View>
+    );
   }
 }
 
@@ -161,13 +168,27 @@ const styles = StyleSheet.create({
     textAlign:'center',
     fontSize:20,
     borderRadius:20,
-    backgroundColor:'#F0FaFa',
+    backgroundColor:'#F0FAFA',
     margin:10,
     padding:20,
   },
   spinner:{
-    alignContent:'center',
-    justifyContent:'center',
+    marginTop:50
+  },
+  loadingContainer:{
     flex:1,
+    backgroundColor:"#A3C4E0",
+  },
+  loadingTitle:{
+    flex:1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingTitleText:{
+    fontFamily:'Pouttu',
+    color:"#585872",
+    fontSize:40,
+    letterSpacing:5,
+    fontWeight:"300"
   }
 });
