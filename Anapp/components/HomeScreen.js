@@ -1,5 +1,5 @@
 import React, {Component, PureComponent} from 'react';
-import { StyleSheet,BackHandler, Alert, Text, ActivityIndicator, View} from 'react-native';
+import { StyleSheet,BackHandler, Alert, TouchableOpacity, Text, ActivityIndicator, View} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import Input from './Input';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -130,15 +130,12 @@ export default class HomeScreen extends Component {
                 value={this.state.email}
                 editable={this.state.first}
             />
-            <Icon.Button 
-                name="send" 
-                onPress={()=>this.register()}
-                backgroundColor="#F5FCFF"
-                color='#87cefa'
-                size={45}
-                style={{padding:13}}
-                borderRadius={400}
-            />
+            <TouchableOpacity 
+              onPress={()=>this.register()}
+              style={styles.register}
+            >
+              <Icon name='send' size={45} color="#87CEFA"/>
+            </TouchableOpacity>
           </View>
         );
       }
@@ -190,5 +187,8 @@ const styles = StyleSheet.create({
     fontSize:40,
     letterSpacing:5,
     fontWeight:"300"
+  },
+  register:{
+    marginTop:20
   }
 });

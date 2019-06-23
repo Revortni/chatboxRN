@@ -75,7 +75,7 @@ class ChatRoom extends React.Component {
                 let message = this.state.messages;
                 message.pop();
                 this.setState({typing:false,messages:message});}
-            },300);
+            },500);
         }); 
     }
 

@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     color:"#fff",
   },
   onlineText:{
-    color:"#4F6367",
+    color:"#4F1373",
   },
 });
 
