@@ -24,10 +24,24 @@ class ChatRoom extends React.Component {
             typing:false
             };
         this.pushMsg = this.pushMsg.bind(this);
-        this.timeout = "";
-        this.timer = null;    
+        this.pingTimer = null;
+        this.sendTimer = null;  
+        this.recTimer = null;  
         this.typer = [];
-        this.socket = SocketIOClient(rltheroku);
+        this.socket = null;         
+    }
+
+    componentDidMount(){        
+        this.socket = SocketIOClient(localhost);
+        
+        this.socket.emit('appOn');
+        this.interval = setInterval(()=>{
+            this.socket.emit('appOn');
+            this.pingTimer = setTimeout(()=>{
+                this.setState({connected:false});                
+            },2000);
+        },10000);
+
         this.socket.on('connect',()=>this._getInfo());
         this.socket.on('receiveMessage',(data)=>this.receiveMessage(data));
         this.socket.on('serverInfo',(data)=>this.serverInfo(data));  
@@ -63,39 +77,33 @@ class ChatRoom extends React.Component {
             }catch{
                 users=username;
             }
-            clearTimeout(this.timer);
+            clearTimeout(this.recTimer);
             let msgs = this.state.messages;
             if (!this.state.typing){
                 let isare = (this.typer.length>1)?" are":" is";
                 msgs.push({message:users+isare+" typing . . .",action:'info',italic:true});
             }
             this.setState({typing:true,messages:msgs});
-            this.timer = setTimeout(()=>{
+            this.recTimer = setTimeout(()=>{
                 if(this.state.typing){
                 let message = this.state.messages;
                 message.pop();
                 this.setState({typing:false,messages:message});}
             },500);
-        }); 
-    }
-
-    componentDidMount(){
-        this.socket.emit('appOn');
-        this.interval = setInterval(()=>{
-            this.socket.emit('appOn');
-            this.timeout = setTimeout(()=>{
-                this.setState({connected:false});                
-            },2000);
-        },10000);
+        });
     }
 
     componentWillUnmount(){
+        this.socket.disconnect();
         clearInterval(this.interval);
+        clearTimeout(this.sendTimer);
+        clearTimeout(this.recTimer);
+        clearTimeout(this.pingTimer);
     }
 
     isConnected(){
         this.setState({connected:true});
-        clearTimeout(this.timeout);
+        clearTimeout(this.pingTimer);
     }
 
     reset = () =>{
@@ -185,7 +193,7 @@ class ChatRoom extends React.Component {
     _keyPress = () =>{
         clearTimeout(this.timer);
         this.socket.emit('typing',{userid:this.state.userid,typing:true});
-        this.timer = setTimeout(
+        this.sendTimer = setTimeout(
             ()=>this.socket.emit("typing",{
                 userid:this.userid,typing:false
             }),500);
