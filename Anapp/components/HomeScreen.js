@@ -18,8 +18,6 @@ export default class HomeScreen extends Component {
       test:false
     };  
     // AsyncStorage.clear();
-    this.checkFirstUse();
-    this.checkRegistration();
     this.emailInput = React.createRef();
   }
 
@@ -40,9 +38,12 @@ export default class HomeScreen extends Component {
    } 
 
   componentDidMount(){
+    this.checkFirstUse();
+    this.checkRegistration();
     BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
   }
   componentWillUnmount() {
+    clearTimeout(this.loader);
     BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
   }
 
@@ -73,7 +74,7 @@ export default class HomeScreen extends Component {
           this.setState({registered:true});
         }
       }
-      setTimeout(()=>this.setState({loaded:true}),3000);
+      this.loader = setTimeout(()=>this.setState({loaded:true}),3000);
     } catch(e){
       alert(e);
     }
