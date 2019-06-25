@@ -32,8 +32,8 @@ class ChatRoom extends React.Component {
     }
 
     componentDidMount(){        
-        this.socket = SocketIOClient(localhost);
-        
+        this.socket = SocketIOClient(rltheroku);
+
         this.socket.emit('appOn');
         this.interval = setInterval(()=>{
             this.socket.emit('appOn');
