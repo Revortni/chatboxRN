@@ -39,8 +39,8 @@ runDatabase = async()=>{
 				usermap[userid] = username;
 			});
 		}
-		messages = data.map(({userid,message})=>{
-			return {username:usermap[userid],message,userid}
+		messages = data.map(({userid,message,createdAt})=>{
+			return {username:usermap[userid],message,userid,createdAt}
 		});		
 		return Promise.resolve();
 	} catch(err){
@@ -71,7 +71,6 @@ function newconnection(socket){
 		console.log("Users online:");
 		console.log(users);
 	}
-	
 	//server messages
 	initialres = ()=>{
 		socket.emit('serverInfo',{message:((onlinecount-1)==1)?'A user is online':`${onlinecount-1} users are online`});
@@ -161,7 +160,6 @@ function newconnection(socket){
 	
 	//when user sends a message
 	socket.on('sendMessage',async function(data){
-		console.log(data);
 		if(data.message=="!resetMe$"){
 			socket.emit("resetMe");
 			socket.on("acceptRename",()=>{
@@ -173,7 +171,9 @@ function newconnection(socket){
 			});
 			return;
 		}
-		let temp = {username:usermap[data.userid],message:data.message,userid:data.userid};
+		let timestamp = new Date();
+		let temp = {username:usermap[data.userid],message:data.message,userid:data.userid,createdAt:timestamp.toISOString()};
+		console.log(temp);
 		messages.push(temp);
 		socket.broadcast.emit('receiveMessage',temp);
 		msgdb.addMessage(data).catch((err)=>console.error(err));		
