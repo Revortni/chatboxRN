@@ -33,7 +33,6 @@ class ChatRoom extends React.Component {
 
     componentDidMount(){        
         this.socket = SocketIOClient(rltheroku);
-
         this.socket.emit('appOn');
         this.interval = setInterval(()=>{
             this.socket.emit('appOn');
@@ -51,11 +50,11 @@ class ChatRoom extends React.Component {
             this.setState({connected:false});
         });
         this.socket.on('oldMessages',(data)=>{
-            let messages = data.map(({username,userid,message})=>{
+            let messages = data.map(({username,userid,message,createdAt})=>{
                 if(userid==this.state.userid){
-                    return {username,message,action:"sent"};
+                    return {username,message,action:"sent",createdAt};
                 } else {
-                    return {username,message,action:"rec"};
+                    return {username,message,action:"rec",createdAt};
                 }
             });
             this.setState({messages});
@@ -173,14 +172,15 @@ class ChatRoom extends React.Component {
     sendMessage = () => {
         if(this.state.text){
             msg = this.state.text.trim();
+            let timestamp = new Date();
             this.socket.emit("sendMessage",{message:msg,userid:this.state.userid});
-            this.pushMsg({message:msg,action:'sent'});
+            this.pushMsg({message:msg,action:'sent',createdAt:timestamp.toISOString()});
             this.setState({text:""})
         }
     }
     
-    receiveMessage=({message,username=0})=>{
-        this.pushMsg({message:message,action:'rec',username:username});
+    receiveMessage=({message,username=0,createdAt})=>{
+        this.pushMsg({message:message,action:'rec',username:username,createdAt});
         // alert(this.state.messages[this.state.messages.length-1].message);
         Vibration.vibrate([0,300,200,300]);
     }
@@ -200,7 +200,6 @@ class ChatRoom extends React.Component {
     }
 
     render() {
-    
         return(
             <View style = {styles.container}>
                 <View style={styles.headbar}>
