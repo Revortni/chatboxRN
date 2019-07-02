@@ -43,7 +43,7 @@ export default class MessageList extends Component {
             if(hdiff>3){
                 return now.format("D MMM [AT] h:mm A");
             }else if (hdiff>0){
-                return now.format("dddd [AT] h:mm A");
+                return now.format("ddd [AT] h:mm A");
             }
             return now.format("h:mm A");
         }
@@ -105,12 +105,15 @@ export default class MessageList extends Component {
             padding:10,
             alignSelf:'center',
             flexDirection:'column',
-            marginBottom:2
+            marginBottom:4,
+            marginTop:2
         },
         timestamp:{
             color:"#696969",
-            fontSize:11,
-            fontFamily:'Roboto'
+            fontSize:10.5,
+            fontFamily:"SourceSansPro-Regular",
+            letterSpacing:.6,
+            textTransform:'uppercase'
         },
         msgwrapper:{
 
