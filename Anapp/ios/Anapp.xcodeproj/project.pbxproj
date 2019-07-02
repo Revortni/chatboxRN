@@ -79,6 +79,7 @@
 		2F471FC9A4104EC3B6EA72AE /* libRNCNetInfo-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BA6F8C69D0764A4BB3CE4C15 /* libRNCNetInfo-tvOS.a */; };
 		D3D9842015264080ACC3F08D /* DoctorJekyllNF.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3F44193E273F4D78ABDA6C8B /* DoctorJekyllNF.ttf */; };
 		A5E915AE4573422EA7396BE2 /* POUTTU.TTF in Resources */ = {isa = PBXBuildFile; fileRef = 6D0CF47135334F34995962E0 /* POUTTU.TTF */; };
+		52155A5C7B094B9E9D588611 /* SourceSansPro-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 6F6FC4159AC34FFB887281EF /* SourceSansPro-Regular.otf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -429,6 +430,7 @@
 		BA6F8C69D0764A4BB3CE4C15 /* libRNCNetInfo-tvOS.a */ = {isa = PBXFileReference; name = "libRNCNetInfo-tvOS.a"; path = "libRNCNetInfo-tvOS.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		3F44193E273F4D78ABDA6C8B /* DoctorJekyllNF.ttf */ = {isa = PBXFileReference; name = "DoctorJekyllNF.ttf"; path = "../assets/fonts/DoctorJekyllNF.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		6D0CF47135334F34995962E0 /* POUTTU.TTF */ = {isa = PBXFileReference; name = "POUTTU.TTF"; path = "../assets/fonts/POUTTU.TTF"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		6F6FC4159AC34FFB887281EF /* SourceSansPro-Regular.otf */ = {isa = PBXFileReference; name = "SourceSansPro-Regular.otf"; path = "../assets/fonts/SourceSansPro-Regular.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -740,6 +742,7 @@
 				62C7D0511AE641BC8D5EA8A1 /* Zocial.ttf */,
 				3F44193E273F4D78ABDA6C8B /* DoctorJekyllNF.ttf */,
 				6D0CF47135334F34995962E0 /* POUTTU.TTF */,
+				6F6FC4159AC34FFB887281EF /* SourceSansPro-Regular.otf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -1226,6 +1229,7 @@
 				335F71969AE549A98C6CA2FE /* Zocial.ttf in Resources */,
 				D3D9842015264080ACC3F08D /* DoctorJekyllNF.ttf in Resources */,
 				A5E915AE4573422EA7396BE2 /* POUTTU.TTF in Resources */,
+				52155A5C7B094B9E9D588611 /* SourceSansPro-Regular.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
