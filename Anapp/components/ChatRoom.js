@@ -21,7 +21,8 @@ class ChatRoom extends React.Component {
             title:'Gospel',
             connected:null,
             text:"",
-            typing:false
+            typing:false,
+            vibrate:true
             };
         this.pushMsg = this.pushMsg.bind(this);
         this.pingTimer = null;
@@ -182,7 +183,9 @@ class ChatRoom extends React.Component {
     receiveMessage=({message,username=0,createdAt})=>{
         this.pushMsg({message:message,action:'rec',username:username,createdAt});
         // alert(this.state.messages[this.state.messages.length-1].message);
-        Vibration.vibrate([0,300,200,300]);
+        if(this.state.vibrate){
+            Vibration.vibrate([0,300,200,300]);
+        }
     }
 
 
@@ -199,12 +202,25 @@ class ChatRoom extends React.Component {
             }),500);
     }
 
+    toggleVibrate(){
+        if(!this.state.vibrate){
+            Vibration.vibrate(800);
+        }else{
+            Vibration.vibrate(300);
+        }
+        this.setState({
+            vibrate:!this.state.vibrate
+        });
+    }
+
     render() {
         return(
             <View style = {styles.container}>
-                <View style={styles.headbar}>
-                    <Text style={styles.headTitle}>{this.state.title}</Text>
-                </View>
+                <TouchableOpacity activeOpacity={0.6} onLongPress={()=>this.toggleVibrate()}>
+                    <View style={styles.headbar}>        
+                        <Text style={styles.headTitle}>{this.state.title}</Text>
+                    </View>
+                </TouchableOpacity>
                 <NetworkInfo status={this.state.connected}/>
                 <MessageList messages ={this.state.messages}/>
                 <View style = {styles.inputArea}>      
