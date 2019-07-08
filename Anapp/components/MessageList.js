@@ -51,16 +51,6 @@ export default class MessageList extends Component {
         return null;
     }
 
-    copyToBoard = async(msg) => {
-        Alert.alert("Copy?",null,[{
-            text:"Yes",
-            onPress:()=> Clipboard.setString(msg),
-        }],
-        {
-            cancelable:true
-        });
-    }
-
     render() {
         var lastsender = "";
         var last = 0;
@@ -92,9 +82,7 @@ export default class MessageList extends Component {
                             return(
                                 <View style = {styles.msgwrapper} key={i}>
                                     {content}
-                                    <TouchableOpacity activeOpacity={0.6} onLongPress = {()=>this.copyToBoard(x.message)}>
-                                        <Message type={x.action} content={x.message} username={x.username} key={i}/>
-                                    </TouchableOpacity>
+                                    <Message type={x.action} content={x.message} username={x.username} key={i}/>
                                 </View>
                             );
                             

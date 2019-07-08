@@ -1,13 +1,23 @@
 import React from 'react';
-import { View,StyleSheet, Text } from 'react-native';
+import { Alert, View, StyleSheet, Text, TouchableOpacity, Clipboard } from 'react-native';
 
 
 const Message = (props) =>{
+    copyToBoard = async(msg) => {
+    Alert.alert("Options",null,[{
+        text:"Copy",
+        onPress:()=> Clipboard.setString(msg)
+    }],
+    {
+        cancelable:true
+    });
+    }
     if(props.type=="sent"){
       return(
-        <View style={styles.sent}>
-          <Text style={styles.text}>{props.content}</Text>
-        </View>
+        <TouchableOpacity activeOpacity={0.6} onLongPress = {()=>this.copyToBoard(props.content)} style = {styles.sent}>
+            <Text style={styles.text}>{props.content}</Text>
+        </TouchableOpacity>
+        
       );
     }
     else if (props.type=="rec"){
@@ -18,16 +28,16 @@ const Message = (props) =>{
       return(
         <View style={{maxWidth:220}}>
           {content}
-          <View style={styles.rec}>
+          <TouchableOpacity activeOpacity={0.6} onLongPress = {()=>this.copyToBoard(props.content)} style = {styles.rec}>
             <Text style={styles.text}>{props.content}</Text>        
-          </View>
+          </TouchableOpacity>
         </View>
       );
     } 
     else if (props.type=="info") {
       let text =<Text style={styles.infoTextItalic}>{props.content}</Text>
       return(
-        <View style={styles.info}>
+        <View style = {styles.info}>
           {text}
         </View>
       );
