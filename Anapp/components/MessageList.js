@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { StyleSheet,ScrollView,KeyboardAvoidingView,Keyboard, View, Text} from 'react-native';
+import {Alert, StyleSheet,ScrollView,KeyboardAvoidingView,Keyboard, View, Text, TouchableOpacity, Clipboard} from 'react-native';
 import Message from './Message';
 import moment from "moment";
 
@@ -7,7 +7,8 @@ export default class MessageList extends Component {
     constructor(props){
         super(props);
         this.state = {
-            messages:props.messages
+            messages:props.messages,
+            clipboardContent:null
         };
         this.scrollView = React.createRef();
     }
@@ -50,6 +51,16 @@ export default class MessageList extends Component {
         return null;
     }
 
+    copyToBoard = async(msg) => {
+        Alert.alert("Copy?",null,[{
+            text:"Yes",
+            onPress:()=> Clipboard.setString(msg),
+        }],
+        {
+            cancelable:true
+        });
+    }
+
     render() {
         var lastsender = "";
         var last = 0;
@@ -75,20 +86,18 @@ export default class MessageList extends Component {
                             }
                             if(x.username!=lastsender){
                                 lastsender=x.username;
-                                return(
-                                    <View style = {styles.msgwrapper} key={i}>
-                                        {content}
-                                        <Message type={x.action} content={x.message} username={x.username} key={i}/>
-                                    </View>
-                                
-                                );
-                            }                            
+                            }else{
+                                x.username=null;
+                            }
                             return(
                                 <View style = {styles.msgwrapper} key={i}>
                                     {content}
-                                    <Message type={x.action} content={x.message} key={i}/>
+                                    <TouchableOpacity activeOpacity={0.6} onLongPress = {()=>this.copyToBoard(x.message)}>
+                                        <Message type={x.action} content={x.message} username={x.username} key={i}/>
+                                    </TouchableOpacity>
                                 </View>
-                            )
+                            );
+                            
                         })}
                     </KeyboardAvoidingView>
             </ScrollView>
@@ -106,12 +115,12 @@ export default class MessageList extends Component {
             alignSelf:'center',
             flexDirection:'column',
             marginBottom:4,
-            marginTop:2
+            marginTop:6
         },
         timestamp:{
             color:"#696969",
-            fontSize:10.5,
-            fontFamily:"SourceSansPro-Regular",
+            fontSize:10.8,
+            fontFamily:"Roboto",
             letterSpacing:.6,
             textTransform:'uppercase'
         },
