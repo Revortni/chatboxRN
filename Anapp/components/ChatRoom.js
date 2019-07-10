@@ -15,6 +15,7 @@ class ChatRoom extends React.Component {
         super(props);
         this.state = {
             messages: [],
+            oldmessages:[],
             userid:null,
             username:this.props.username,
             email:this.props.email,
@@ -58,7 +59,7 @@ class ChatRoom extends React.Component {
                     return {username,message,action:"rec",createdAt};
                 }
             });
-            this.setState({messages});
+            this.setState({oldmessages:messages});
         });
         this.socket.on('resetMe',()=>{
             this.reset();
@@ -172,7 +173,7 @@ class ChatRoom extends React.Component {
 
     sendMessage = () => {
         if(this.state.text){
-            msg = this.state.text.trim();
+            let msg = this.state.text.trim();
             let timestamp = new Date();
             this.socket.emit("sendMessage",{message:msg,userid:this.state.userid});
             this.pushMsg({message:msg,action:'sent',createdAt:timestamp.toISOString()});
@@ -222,7 +223,7 @@ class ChatRoom extends React.Component {
                     </View>
                 </TouchableOpacity>
                 <NetworkInfo status={this.state.connected}/>
-                <MessageList messages ={this.state.messages}/>
+                <MessageList messages ={this.state.messages} oldmessages = {this.state.oldmessages}/>
                 <View style = {styles.inputArea}>      
                     <Input
                         placeholder="Aa"
