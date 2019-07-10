@@ -1,30 +1,16 @@
-import React, {Component} from 'react';
+import React, {Component, PureComponent} from 'react';
 import {Alert, StyleSheet,ScrollView,KeyboardAvoidingView,Keyboard, View, Text, TouchableOpacity, Clipboard} from 'react-native';
 import Message from './Message';
 import moment from "moment";
 
-export default class MessageList extends Component {
+class MessageContent extends PureComponent {
     constructor(props){
         super(props);
         this.state = {
-            messages:props.messages,
-            clipboardContent:null
-        };
-        this.scrollView = React.createRef();
+            messages:props.messages
+        }
     }
-    
-    componentDidMount() {
-        this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow',()=>this._keyboardDidShow());
-    }
-      
-    componentWillUnmount() {
-        this.keyboardDidShowListener.remove();
-    }
-    
-    _keyboardDidShow = ()=>{
-        this.scrollView.scrollToEnd({ animated: false });
-    }
-    
+
     static getDerivedStateFromProps(nextProps,prevState){
         if (prevState.messages.length !== nextProps.messages.length) {
             return({
@@ -51,9 +37,62 @@ export default class MessageList extends Component {
         return null;
     }
 
-    render() {
+    render(){
         var lastsender = "";
         var last = 0;
+        if(!this.state.messages){
+            return null;
+        }
+        return (
+            this.state.messages.map((x,i)=>{
+            let timestamp = null;
+            let content = null;
+            if(x.action =="sent" || x.action == "rec"){
+                // alert(`${x.createdAt}`);
+                timestamp = this.getTimeStamp(last,x.createdAt);
+                last = x.createdAt;
+                if(timestamp){
+                    content = <View style = {styles.timestampContainer}><Text style = {styles.timestamp}>{timestamp}</Text></View>;
+                }
+            }
+            if(x.username!=lastsender){
+                lastsender=x.username;
+            }else{
+                x.username=null;
+            }
+            return(
+                <View style = {styles.msgwrapper} key={i}>
+                    {content}
+                    <Message type={x.action} content={x.message} username={x.username} key={i}/>
+                </View>
+            );
+       `` })
+        )
+    }
+}
+
+export default class MessageList extends Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            clipboardContent:null
+        };
+        this.scrollView = React.createRef();
+    }
+
+    componentDidMount() {
+        this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow',()=>this._keyboardDidShow());
+    }
+      
+    componentWillUnmount() {
+        this.keyboardDidShowListener.remove();
+    }
+    
+    _keyboardDidShow = ()=>{
+        this.scrollView.scrollToEnd({ animated: false });
+    }
+
+    render() {
         return (
             <ScrollView 
                     keyboardShouldPersistTaps="handled"
@@ -63,30 +102,8 @@ export default class MessageList extends Component {
                     }
                 }>
                     <KeyboardAvoidingView style={styles.messageContainer}>
-                        {this.state.messages.map((x,i)=>{
-                            let timestamp = null;
-                            let content = null;
-                            if(x.action =="sent" || x.action == "rec"){
-                                // alert(`${x.createdAt}`);
-                                timestamp = this.getTimeStamp(last,x.createdAt);
-                                last = x.createdAt;
-                                if(timestamp){
-                                    content = <View style = {styles.timestampContainer}><Text style = {styles.timestamp}>{timestamp}</Text></View>;
-                                }
-                            }
-                            if(x.username!=lastsender){
-                                lastsender=x.username;
-                            }else{
-                                x.username=null;
-                            }
-                            return(
-                                <View style = {styles.msgwrapper} key={i}>
-                                    {content}
-                                    <Message type={x.action} content={x.message} username={x.username} key={i}/>
-                                </View>
-                            );
-                            
-                        })}
+                        <MessageContent messages = {this.props.oldmessages} />
+                        <MessageContent messages = {[...this.props.messages]} />
                     </KeyboardAvoidingView>
             </ScrollView>
             );
