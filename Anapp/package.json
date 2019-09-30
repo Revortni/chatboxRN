@@ -8,13 +8,14 @@
     "build": "react-native run-android"
   },
   "dependencies": {
-    "@react-native-community/async-storage": "^1.5.0",
+    "@react-native-community/async-storage": "^1.6.1",
     "@react-native-community/netinfo": "^3.2.1",
     "concurrently": "^4.1.0",
+    "core-js": "^3.2.1",
     "http": "0.0.0",
     "moment": "^2.24.0",
-    "react": "^16.8.3",
-    "react-native": "^0.60.4",
+    "react": "16.9.0",
+    "react-native": "0.61.1",
     "react-native-vector-icons": "^6.6.0",
     "socket.io-client": "^2.2.0",
     "uuid": "^3.3.2"
@@ -23,8 +24,12 @@
     "@babel/core": "^7.4.5",
     "@babel/runtime": "^7.4.5",
     "babel-jest": "^24.8.0",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-config-prettier": "^6.3.0",
+    "eslint-plugin-prettier": "^3.1.1",
     "jest": "^24.8.0",
     "metro-react-native-babel-preset": "^0.54.1",
+    "prettier": "^1.18.2",
     "react-test-renderer": "16.8.3"
   },
   "jest": {

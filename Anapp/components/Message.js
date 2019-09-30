@@ -14,7 +14,7 @@ const Message = (props) =>{
     }
     if(props.type=="sent"){
       return(
-        <TouchableOpacity activeOpacity={0.6} onLongPress = {()=>this.copyToBoard(props.content)} style = {styles.sent}>
+        <TouchableOpacity activeOpacity={0.6} onLongPress = {()=>this.copyToBoard(props.content)} style = {[styles.messages,styles.sent]}>
             <Text style={styles.text}>{props.content}</Text>
         </TouchableOpacity>
         
@@ -28,13 +28,13 @@ const Message = (props) =>{
       return(
         <View style={{maxWidth:220}}>
           {content}
-          <TouchableOpacity activeOpacity={0.6} onLongPress = {()=>this.copyToBoard(props.content)} style = {styles.rec}>
+          <TouchableOpacity activeOpacity={0.6} onLongPress = {()=>this.copyToBoard(props.content)} style = {[styles.messages,styles.rec]}>
             <Text style={styles.text}>{props.content}</Text>        
           </TouchableOpacity>
         </View>
       );
     } 
-    else if (props.type=="info") {
+    else if (props.type=="info") {  
       let text =<Text style={styles.infoTextItalic}>{props.content}</Text>
       return(
         <View style = {styles.info}>
@@ -45,32 +45,24 @@ const Message = (props) =>{
 }
 
 const styles = StyleSheet.create({
-  sent:{
-    backgroundColor:'#87CEFA',
-    color:'#010101',
+  messages:{
     paddingTop:8,
     paddingLeft:15,
     paddingRight:15,
     paddingBottom:8,
-    alignSelf:'flex-end',
     flexDirection:'column',
     marginRight:10,
     borderRadius:20,
     maxWidth:220,
     marginBottom:2
   },
+  sent:{
+    backgroundColor:'#718D93',
+    alignSelf:'flex-end',
+  },
   rec:{
-    backgroundColor:'#98fb98',
-    paddingTop:8,
-    paddingLeft:15,
-    paddingRight:15,
-    paddingBottom:8,
-    alignSelf:'flex-start',
-    flexDirection:'column',
-    marginLeft:10,
-    borderRadius:20,
-    maxWidth:220,
-    marginBottom:2
+    backgroundColor:'#5DA392e',
+    alignSelf:'flex-start'
   },
   info:{
     padding:10,
@@ -80,16 +72,16 @@ const styles = StyleSheet.create({
   },
   infoText:{
     fontSize:13,
-    color:'#87cefa',
+    color:'#744774',
   },
   infoTextItalic:{
     fontSize:13,
-    color:'#87cefa',
+    color:'#744774',
     fontStyle:"italic"
   },
   text:{
     fontSize:15,
-    color:'#1A1A1A',
+    color:'#ffffff',
   },
   username:{
     marginLeft:15,
