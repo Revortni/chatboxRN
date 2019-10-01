@@ -5,17 +5,22 @@
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest",
-    "build": "react-native run-android"
+    "build": "react-native run-android",
+    "lint": "eslint app/",
+    "lint:fix": "eslint app/ --fix",
+    "android": "cd ./android && ./gradlew app:assembleDebug && ./gradlew installDebug"
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.6.2",
     "@react-native-community/netinfo": "^3.2.1",
     "concurrently": "^4.1.0",
     "core-js": "^3.2.1",
+    "eslint-plugin-react-native": "^3.7.0",
     "http": "0.0.0",
     "moment": "^2.24.0",
     "react": "16.9.0",
     "react-native": "0.61.1",
+    "react-native-router-flux": "^4.0.6",
     "react-native-vector-icons": "^6.6.0",
     "socket.io-client": "^2.3.0",
     "uuid": "^3.3.2"
@@ -25,11 +30,9 @@
     "@babel/runtime": "^7.4.5",
     "babel-eslint": "^8.2.6",
     "babel-jest": "^24.8.0",
-    "eslint": "^4.19.1",
+    "eslint": "^6.5.1",
     "eslint-config-airbnb": "^18.0.1",
     "eslint-config-prettier": "^6.3.0",
-    "eslint-plugin-import": "^2.18.2",
-    "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-prettier": "^3.1.1",
     "eslint-plugin-react": "^7.14.3",
     "eslint-plugin-react-hooks": "^2.1.0",

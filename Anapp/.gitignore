@@ -56,3 +56,5 @@ buck-out/
 *.jsbundle
 
 components/config.json
+
+components/user.json
