@@ -1,0 +1,10 @@
+{
+  "editor.formatOnSave": true,
+  "eslint.autoFixOnSave": true,
+  "eslint.alwaysShowStatus": true,
+  // disable editor formatting, so eslint can handle it
+  "[javascript]": {
+    "editor.formatOnSave": false,
+  },
+  "java.configuration.updateBuildConfiguration": "interactive",
+}

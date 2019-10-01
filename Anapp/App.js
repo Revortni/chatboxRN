@@ -1,27 +1,27 @@
-import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, StatusBar} from 'react-native';
+import React, { Component } from 'react';
+import { StyleSheet, View, StatusBar } from 'react-native';
 import HomeScreen from './app/pages/HomeScreen';
 
 export default class App extends Component {
   render() {
     return (
       <React.Fragment>
-        <View style={{marginBottom:20}}>
-          <StatusBar 
-          translucent 
-          backgroundColor={styles.statusBar.backgroundColor}
-          barStyle="light-content"
-          hidden={false}
+        <View style={{ marginBottom: 20 }}>
+          <StatusBar
+            translucent
+            backgroundColor={styles.statusBar.backgroundColor}
+            barStyle="light-content"
+            hidden={false}
           />
         </View>
-        <HomeScreen/>
+        <HomeScreen />
       </React.Fragment>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  statusBar:{
-    backgroundColor:"#000"
+  statusBar: {
+    backgroundColor: '#000'
   }
 });
