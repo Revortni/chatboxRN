@@ -22,4 +22,4 @@ export default {
   TEXT: '#FFF',
   HOLDERTEXT: '#808080',
   TITLE: '#FFF'
-};;
+};
