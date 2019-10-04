@@ -1,17 +1,12 @@
-import React, { Component, PureComponent, useState} from 'react';
-import {
-  StyleSheet,
-  ScrollView,
-  KeyboardAvoidingView,
-  Keyboard,
-  View,
-  Text,
-} from 'react-native';
-import moment from 'moment';
-import Message from './Message';
-import theme from '../config/appConfig';
+/* eslint-disable react/no-array-index-key */
+import React, { PureComponent} from 'react';
+import {  View } from 'react-native';
+import PropTypes from 'prop-types';
+import TimeStamp from './Timestamp';
+import MessageFactory from './MessageFactory';
 
-class MessageContent extends PureComponent {
+
+export default class MessageList extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -28,23 +23,6 @@ class MessageContent extends PureComponent {
     return null;
   }
 
-  getTimeStamp = (x, y) => {
-    let last = moment(x);
-    let now = moment(y);
-    let diff = now.diff(last, 'minutes');
-    // alert(`${x} ${y} ${diff}`);
-    if (diff > 5) {
-      let hdiff = moment().diff(now, 'days');
-      if (hdiff > 3) {
-        return now.format('D MMM [AT] h:mm A');
-      } else if (hdiff > 0) {
-        return now.format('ddd [AT] h:mm A');
-      }
-      return now.format('h:mm A');
-    }
-    return null;
-  };
-
   render() {
     var lastsender = '';
     var last = 0;
@@ -52,19 +30,10 @@ class MessageContent extends PureComponent {
       return null;
     }
     return this.state.messages.map((x, i) => {
-      let timestamp = null;
       let content = null;
       if (x.action == 'sent' || x.action == 'rec') {
-        // alert(`${x.createdAt}`);
-        timestamp = this.getTimeStamp(last, x.createdAt);
+        content = <TimeStamp last = {last} current = {x.createdAt}/>;
         last = x.createdAt;
-        if (timestamp) {
-          content = (
-            <View style={styles.timestampContainer}>
-              <Text style={styles.timestamp}>{timestamp}</Text>
-            </View>
-          );
-        }
       }
       if (x.username != lastsender) {
         lastsender = x.username;
@@ -72,72 +41,15 @@ class MessageContent extends PureComponent {
         x.username = null;
       }
       return (
-        <View style={styles.msgwrapper} key={i}>
+        <View key={i}>
           {content}
-          <Message type={x.action} content={x.message} username={x.username} key={i} />
+          <MessageFactory type={x.action} content={x.message} username={x.username} key={i} />
         </View>
       );
     });
   }
 }
 
-export default class MessageList extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      clipboardContent: null
-    };
-    this.scrollView = React.createRef();
-  }
-
-  componentDidMount() {
-    this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () =>
-      this._keyboardDidShow()
-    );
-  }
-
-  componentWillUnmount() {
-    this.keyboardDidShowListener.remove();
-  }
-
-  _keyboardDidShow = () => {
-    this.scrollView.scrollToEnd({ animated: false });
-  };
-
-  render() {
-    return (
-      <ScrollView
-        keyboardShouldPersistTaps="handled"
-        ref={ref => (this.scrollView = ref)}
-        onContentSizeChange={(contentWidth, contentHeight) => {
-          this.scrollView.scrollToEnd({ animated: true });
-        }}>
-        <KeyboardAvoidingView style={styles.messageContainer}>
-          <MessageContent messages={this.props.oldmessages} />
-          <MessageContent messages={[...this.props.messages]} />
-        </KeyboardAvoidingView>
-      </ScrollView>
-    );
-  }
-}
-
-const styles = StyleSheet.create({
-  messageContainer: {
-    marginTop: 5,
-    marginBottom: 10
-  },
-  timestampContainer: {
-    padding: 10,
-    alignSelf: 'center',
-    flexDirection: 'column',
-    marginBottom: 4,
-    marginTop: 6
-  },
-  timestamp: {
-    color: theme.TIMESTAMP,
-    fontSize: 10.8,
-    letterSpacing: 0.6,
-    textTransform: 'uppercase'
-  },
-  msgwrapper: {}
-});
+MessageList.propTypes = {
+  messages: PropTypes.array.isRequired
+};
