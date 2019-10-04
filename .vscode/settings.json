@@ -10,4 +10,9 @@
   "files.eol": "\n",
   "editor.wordWrap": "on",
   "workbench.activityBar.visible": true,
+  "editor.fontSize": 14,
+  "terminal.integrated.fontSize": 14,
+  "editor.fontFamily": "'Roboto Slab', 'Courier New', monospace",
+  "terminal.integrated.fontFamily": "monospace",
+  "editor.fontLigatures": true,
 }
