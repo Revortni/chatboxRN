@@ -95,7 +95,7 @@ export default class HomeScreen extends Component {
   };
 
   register = async () => {
-    const pattern = /^[\w\.-]+@[\w\.-]+$/i;
+    const pattern = /^[\w\.-]+@[\w\.-]+$/;
     let email = this.state.email;
     if (NetInfo.isConnected) {
       if (this.state.username.length > 0) {
