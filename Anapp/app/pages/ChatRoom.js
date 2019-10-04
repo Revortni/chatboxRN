@@ -11,13 +11,15 @@ import {
 import AsyncStorage from '@react-native-community/async-storage';
 import SocketIOClient from 'socket.io-client/dist/socket.io';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import PropTypes from 'prop-types';
 import Input from '../components/Input';
-import MessageList from '../components/MessageList';
+import ChatWindow from '../components/ChatWindow';
 import NetworkInfo from '../components/NetworkInfo';
 import theme from '../config/appConfig';
 
 const INFO = '@userInfo';
 
+// eslint-disable-next-line no-unused-vars
 const { localhost, heroku, rltheroku } = require('../config/config.json');
 
 class ChatRoom extends React.Component {
@@ -92,7 +94,7 @@ class ChatRoom extends React.Component {
         users = username;
       }
       clearTimeout(this.recTimer);
-      let msgs = this.state.messages;
+      let msgs = {...this.state.messages};
       if (!this.state.typing) {
         let isare = this.typer.length > 1 ? ' are' : ' is';
         msgs.push({ message: users + isare + ' typing . . .', action: 'info', italic: true });
@@ -100,7 +102,7 @@ class ChatRoom extends React.Component {
       this.setState({ typing: true, messages: msgs });
       this.recTimer = setTimeout(() => {
         if (this.state.typing) {
-          let message = this.state.messages;
+          let message = {...this.state.messages};
           message.pop();
           this.setState({ typing: false, messages: message });
         }
@@ -249,7 +251,7 @@ class ChatRoom extends React.Component {
           </View>
         </TouchableOpacity>
         <NetworkInfo status={this.state.connected} />
-        <MessageList messages={this.state.messages} oldmessages={this.state.oldmessages} />
+        <ChatWindow messages={this.state.messages} oldmessages={this.state.oldmessages} />
         <View style={styles.inputArea}>
           <Input
             placeholder="Aa"
@@ -270,6 +272,12 @@ class ChatRoom extends React.Component {
     );
   }
 }
+
+ChatRoom.propTypes = {
+  email: PropTypes.string.isRequired,
+  username:PropTypes.string.isRequired
+};
+
 
 const styles = StyleSheet.create({
   headbar: {
