@@ -13,13 +13,17 @@ export default {
   TIMESTAMP: '#696969',
   BACKGROUND: '#ECEDEC',
   NETINFO: {
-    connected: '#CD5C5C',
+    connected: '#47745E',
     connecting: '#BBBE64',
-    notConnected: '#47745E',
+    notConnected: '#CD5C5C',
     text: '#F2F2F2'
   },
   BUTTON: '#ECEDEC',
   TEXT: '#FFF',
   HOLDERTEXT: '#696969',
-  TITLE: '#FFF'
+  TITLE: '#FFF',
+  STATUSBAR:{
+    color:'#74475D',
+    style:'light-content'
+  }
 };

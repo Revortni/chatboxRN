@@ -21,5 +21,9 @@ export default {
   BUTTON: '#424242',
   TEXT: '#FFF',
   HOLDERTEXT: '#808080',
-  TITLE: '#FFF'
+  TITLE: '#FFF',
+  STATUSBAR:{
+    color:'#000',
+    style:'light-content'
+  }
 };

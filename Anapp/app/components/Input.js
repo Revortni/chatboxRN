@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, TextInput } from 'react-native';
 
+//forwardref to pass ref for onSubmitEditing
 const Input = React.forwardRef((props, ref) => (
   <View>
     <TextInput

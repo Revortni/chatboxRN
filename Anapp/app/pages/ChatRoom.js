@@ -3,7 +3,6 @@ import {
   Alert,
   View,
   BackHandler,
-  Button,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -235,8 +234,9 @@ class ChatRoom extends React.Component {
     } else {
       Vibration.vibrate(300);
     }
+    let vibe = this.state.vibrate;
     this.setState({
-      vibrate: !this.state.vibrate
+      vibrate: !vibe
     });
   }
 
@@ -274,7 +274,7 @@ class ChatRoom extends React.Component {
 const styles = StyleSheet.create({
   headbar: {
     top: 0,
-    height: 55,
+    height: 60,
     backgroundColor: theme.PRIMARY,
     justifyContent: 'center'
   },
@@ -294,6 +294,7 @@ const styles = StyleSheet.create({
     marginRight: 5
   },
   headTitle: {
+    top:1,
     alignSelf: 'center',
     fontSize: 40,
     width: 100,

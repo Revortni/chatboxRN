@@ -5,7 +5,7 @@ export default {
   CHAT: {
     sent: '#87CEFA',
     rec: '#95FA87',
-    title: '#1A1A1A',
+    title: '#F2F2F2',
     text: '#1A1A1A',
     info: '#87CEFA',
     name: '#696969'
@@ -21,5 +21,9 @@ export default {
   BUTTON: '#F2F2F2',
   TEXT: '#1A1A1A',
   HOLDERTEXT: '#696969',
-  TITLE: '#FFF'
+  TITLE: '#FFF',
+  STATUSBAR:{
+    color:'#FFF',
+    style:'dark-content'
+  }
 };

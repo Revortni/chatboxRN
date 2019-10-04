@@ -7,4 +7,7 @@
     "editor.formatOnSave": false,
   },
   "java.configuration.updateBuildConfiguration": "interactive",
+  "files.eol": "\n",
+  "editor.wordWrap": "on",
+  "workbench.activityBar.visible": true,
 }

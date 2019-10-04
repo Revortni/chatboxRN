@@ -1,14 +1,11 @@
-import React, { Component, PureComponent } from 'react';
+import React, { Component, PureComponent, useState} from 'react';
 import {
-  Alert,
   StyleSheet,
   ScrollView,
   KeyboardAvoidingView,
   Keyboard,
   View,
   Text,
-  TouchableOpacity,
-  Clipboard
 } from 'react-native';
 import moment from 'moment';
 import Message from './Message';
@@ -34,7 +31,7 @@ class MessageContent extends PureComponent {
   getTimeStamp = (x, y) => {
     let last = moment(x);
     let now = moment(y);
-    diff = now.diff(last, 'minutes');
+    let diff = now.diff(last, 'minutes');
     // alert(`${x} ${y} ${diff}`);
     if (diff > 5) {
       let hdiff = moment().diff(now, 'days');
