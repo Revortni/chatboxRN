@@ -1,6 +1,7 @@
-import React, { Component, PureComponent } from 'react';
+import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
+import PropTypes from 'prop-types';
 import theme from '../config/appConfig';
 
 const OfflineSign = props => {
@@ -17,6 +18,15 @@ const OfflineSign = props => {
     </View>
   );
 };
+
+OfflineSign.defaultProps = {
+  connecting: false
+};
+OfflineSign.propTypes = {
+  connecting: PropTypes.bool,
+  info:PropTypes.string.isRequired
+};
+
 
 class OnlineSign extends Component {
   constructor() {
@@ -61,7 +71,7 @@ class NetworkInfo extends Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.status !== this.props.status) {
-      this.setState({ status: this.props.status });
+      return({ status: this.props.status });
     }
   }
 
@@ -96,6 +106,10 @@ class NetworkInfo extends Component {
   }
 }
 
+NetworkInfo.propTypes = {
+  status: PropTypes.oneOfType([true,null,false]).isRequired
+};
+
 const styles = StyleSheet.create({
   offlineContainer: {
     backgroundColor: theme.NETINFO.notConnected,
@@ -125,5 +139,6 @@ const styles = StyleSheet.create({
     color: theme.NETINFO.text
   }
 });
+
 
 export default NetworkInfo;
