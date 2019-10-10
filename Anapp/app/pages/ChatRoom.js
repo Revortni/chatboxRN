@@ -64,50 +64,12 @@ class ChatRoom extends React.Component {
       this.setState({ connected: false });
     });
     this.socket.on('oldMessages', data => {
-      let messages = data.map(({ username, userid, message, createdAt }) => {
-        if (userid == this.state.userid) {
-          return { username, message, action: 'sent', createdAt };
-        } else {
-          return { username, message, action: 'rec', createdAt };
-        }
-      });
-      this.setState({ oldmessages: messages });
+      this.oldmessageHandler(data);
     });
     this.socket.on('resetMe', () => {
       this.reset();
     });
-    this.socket.on('typing', ({ username, typing }) => {
-      let users;
-      try {
-        if (typing && !this.typer.includes(username)) {
-          this.typer.push(username);
-        } else if (!typing) {
-          this.typer.splice(this.typer.indexOf(username), 1);
-        }
-        users =
-          this.typer.length == 1
-            ? username
-            : this.typer.reduce((a, x) => {
-                return a + ', ' + x;
-              });
-      } catch {
-        users = username;
-      }
-      clearTimeout(this.recTimer);
-      let msgs = {...this.state.messages};
-      if (!this.state.typing) {
-        let isare = this.typer.length > 1 ? ' are' : ' is';
-        msgs.push({ message: users + isare + ' typing . . .', action: 'info', italic: true });
-      }
-      this.setState({ typing: true, messages: msgs });
-      this.recTimer = setTimeout(() => {
-        if (this.state.typing) {
-          let message = {...this.state.messages};
-          message.pop();
-          this.setState({ typing: false, messages: message });
-        }
-      }, 500);
-    });
+    this.socket.on('typing', () => this.typingHandler());
   }
 
   componentWillUnmount() {
@@ -121,6 +83,51 @@ class ChatRoom extends React.Component {
   isConnected() {
     this.setState({ connected: true });
     clearTimeout(this.pingTimer);
+  }
+
+  oldmessageHandler(data){
+    let messages = data.map(({ username, userid, message, createdAt }) => {
+      if (userid == this.state.userid) {
+        return { username, message, action: 'sent', createdAt };
+      } else {
+        return { username, message, action: 'rec', createdAt };
+      }
+    });
+    this.setState({ oldmessages: messages });
+  }
+
+  typingHandler({ username, typing }){
+    let users;
+    let msgs = [...this.state.messages];
+    try {
+      if (typing && !this.typer.includes(username)) {
+        this.typer.push(username);
+      } else if (!typing) {
+        this.typer.splice(this.typer.indexOf(username), 1);
+      }
+      users =
+        this.typer.length == 1
+          ? username
+          : this.typer.reduce((a, x) => {
+              return a + ', ' + x;
+            });
+    } catch {
+      users = username;
+    }
+    clearTimeout(this.recTimer);
+    
+    if (!this.state.typing) {
+      let isare = this.typer.length > 1 ? ' are' : ' is';
+      msgs.push({ message: users + isare + ' typing . . .', action: 'info', italic: true });
+    }
+    this.setState({ typing: true, messages: msgs });
+    this.recTimer = setTimeout(() => {
+      if (this.state.typing) {
+        let message = [...this.state.messages];
+        message.pop();
+        this.setState({ typing: false, messages: message });
+      }
+    }, 500);
   }
 
   reset = () => {
