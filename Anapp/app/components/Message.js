@@ -37,13 +37,15 @@ const styles = StyleSheet.create({
 export default Message;
 
 Message.defaultProps = {
-  user:null,
-  onLongPress:null,
+  user:{},
+  style:{},
+
+  onLongPress:()=>{return null;}
 };
 
 Message.propTypes = {
-  user: PropTypes.string,
-  style: PropTypes.instanceOf(StyleSheet).isRequired,
-  onLongPress:PropTypes.func,
-  content:PropTypes.string.isRequired
+  user: PropTypes.object,
+  style: PropTypes.object,
+  content:PropTypes.string.isRequired,
+  onLongPress:PropTypes.func
 };
