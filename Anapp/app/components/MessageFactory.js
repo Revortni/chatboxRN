@@ -45,13 +45,13 @@ const MessageFactory = props => {
 };
 
 MessageFactory.defaultProps = {
-  username:null
+  username:''
 };
 
 MessageFactory.propTypes = {
-  type: PropTypes.string.isRequired,
-  username: PropTypes.string,
-  content:PropTypes.string.isRequired
+  content:PropTypes.string.isRequired,
+  username:PropTypes.string,
+  type:PropTypes.string.isRequired
 };
 
 const styles = StyleSheet.create({
