@@ -31,6 +31,11 @@ const TimeStamp = ({last,current})=>{
     return null;
 };
 
+TimeStamp.propTypes = {
+  last: PropTypes.oneOfType([PropTypes.number,PropTypes.string]).isRequired,
+  current:PropTypes.string.isRequired
+};
+
 const styles = StyleSheet.create({
   timestampContainer: {
     padding: 10,
@@ -47,10 +52,5 @@ const styles = StyleSheet.create({
   },
   msgwrapper: {}
 });
-
-TimeStamp.propTypes = {
-  last: PropTypes.number.isRequired,
-  current:PropTypes.number.isRequired
-};
 
 export default TimeStamp;
