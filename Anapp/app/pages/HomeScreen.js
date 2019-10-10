@@ -95,6 +95,7 @@ export default class HomeScreen extends Component {
   };
 
   register = async () => {
+    // eslint-disable-next-line no-useless-escape
     const pattern = /^[\w\.-]+@[\w\.-]+$/;
     let email = this.state.email;
     if (NetInfo.isConnected) {
