@@ -20,7 +20,7 @@ const OfflineSign = props => {
 };
 
 OfflineSign.defaultProps = {
-  connecting: false
+  connecting:false
 };
 OfflineSign.propTypes = {
   connecting: PropTypes.bool,
@@ -71,7 +71,7 @@ class NetworkInfo extends Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.status !== this.props.status) {
-      return({ status: this.props.status });
+      this.setState({ status: this.props.status });
     }
   }
 
@@ -105,9 +105,12 @@ class NetworkInfo extends Component {
     return <OnlineSign />;
   }
 }
-
+NetworkInfo.defaultProps = {
+  status:null
+}
+;
 NetworkInfo.propTypes = {
-  status: PropTypes.oneOfType([true,null,false]).isRequired
+  status:PropTypes.bool
 };
 
 const styles = StyleSheet.create({
