@@ -3,7 +3,6 @@ import {
   Alert,
   View,
   BackHandler,
-  StyleSheet,
   Text,
   TouchableOpacity,
   Vibration
@@ -12,12 +11,12 @@ import AsyncStorage from '@react-native-community/async-storage';
 import SocketIOClient from 'socket.io-client/dist/socket.io';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import PropTypes from 'prop-types';
-import { withNavigation } from 'react-navigation';
+import DrawerLayout from 'react-native-gesture-handler/DrawerLayout';
 import Input from '../components/Input';
 import ChatWindow from '../components/ChatWindow';
 import NetworkInfo from '../components/NetworkInfo';
-import theme from '../config/appConfig';
 import {ThemeContext} from '../context/ThemeContext';
+import Settings from './Settings';
 
 const INFO = '@userInfo';
 
@@ -37,7 +36,7 @@ class ChatRoom extends React.Component {
         connected: null,
         text: '',
         typing: false,
-        vibrate: false
+        vibrate: 0
         };
         this.pushMsg = this.pushMsg.bind(this);
         this.pingTimer = null;
@@ -239,46 +238,107 @@ class ChatRoom extends React.Component {
         );
     };
 
-    setTheme(){
-        this.context.setTheme();
-    }
+    setVibrate = (vibrate) =>{
+        this.setState({vibrate});
+    };
 
-    navigate = (navigateTo,props) => {
-        this.props.navigation.navigate(navigateTo,props);
-    }
-
-    setVibrate = () =>{
-        
+    renderSettings = ()=>{
+        const value = this.context;
+        return(
+            <Settings vibrate={this.state.vibrate} theme={value.theme.name} setVibrate={()=>this.setVibrate}/>
+        );
     }
 
   render() {
-      let context = this.context;
-    return (
-      <View style={styles.container}>
-          <View style={styles.headbar}>
-            <Text style={styles.headTitle}>{this.state.title}</Text>
-            <TouchableOpacity style={styles.settings}>
-                <Icon name="gear" size={25} color={styles.button.color} onPress={() => this.navigate('Settings',{vibrate:this.state.vibrate,theme:context.theme.name})}/>
-            </TouchableOpacity>
-          </View>
-        <NetworkInfo status={this.state.connected} />
-        <ChatWindow messages={this.state.messages} oldmessages={this.state.oldmessages} />
-        <View style={styles.inputArea}>
-          <Input
-            placeholder="Aa"
-            placeholderTextColor={theme.HOLDERTEXT}
-            onChangeText={text => {
-              this.setState({ text });
-              this._keyPress();
-            }}
-            style={styles.messageInput}
-            value={this.state.text}
-            multiline
-          />
-          <TouchableOpacity style={styles.send} onPress={() => this.sendMessage()}>
-            <Icon name="send" size={25} color={styles.button.color} />
-          </TouchableOpacity>
-        </View>
+      const {theme} = this.context;
+      const styles = {
+        headbar: {
+            top: 0,
+            height: 60,
+            backgroundColor: theme.PRIMARY,
+            justifyContent: 'center'
+        },
+        container: {
+            flex: 1,
+            backgroundColor: theme.BACKGROUND
+        },
+        messageInput: {
+            padding: 6,
+            paddingLeft: 15,
+            backgroundColor: theme.BACKGROUND,
+            color: theme.INPUT,
+            borderRadius: 20,
+            width: 295,
+            fontSize: 15,
+            marginLeft: 20,
+            marginRight: 5
+        },
+        headTitle: {
+            top:1,
+            alignSelf: 'center',
+            fontSize: 40,
+            width: 100,
+            color: theme.CHAT.title,
+            fontFamily: 'Always'
+        },
+        inputArea: {
+            justifyContent: 'center',
+            flexDirection: 'row',
+            backgroundColor: theme.PRIMARY,
+            padding: 10,
+            paddingBottom: 10,
+            alignItems: 'center'
+        },
+        typing: {
+            flex: 1,
+            justifyContent: 'center',
+            marginBottom: 10,
+            paddingTop: 5
+        },
+        send: {
+            marginLeft: 5,
+            marginRight: 20
+        },
+        button: {
+            color: theme.BUTTON
+        },
+        settings:{
+            alignSelf: 'flex-end',
+            position:'absolute',
+            padding:10,
+            paddingTop:12
+        }
+    };
+        return (
+        <View style={styles.container}>
+          <DrawerLayout
+          drawerWidth={200}
+          drawerPosition={DrawerLayout.positions.Right}
+          drawerType="slide"
+          drawerBackgroundColor="#ddd"
+          renderNavigationView={this.renderSettings}>
+            <View style={styles.headbar}>
+                <Text style={styles.headTitle}>{this.state.title}</Text>            
+            </View>
+            <NetworkInfo status={this.state.connected} />
+            <ChatWindow messages={this.state.messages} oldmessages={this.state.oldmessages} />
+            <View style={styles.inputArea}>
+                <Input
+                    placeholder="Aa"
+                    placeholderTextColor={theme.HOLDERTEXT}
+                    onChangeText={text => {
+                    this.setState({ text });
+                    this._keyPress();
+                    }}
+                    style={styles.messageInput}
+                    value={this.state.text}
+                    multiline
+                />
+                <TouchableOpacity style={styles.send} onPress={() => this.sendMessage()}>
+                    <Icon name="send" size={25} color={styles.button.color} />
+                </TouchableOpacity>
+            </View>
+        </DrawerLayout>
       </View>
     );
     }
@@ -291,64 +351,4 @@ ChatRoom.propTypes = {
   username:PropTypes.string.isRequired
 };
 
-
-const styles = StyleSheet.create({
-    headbar: {
-        top: 0,
-        height: 60,
-        backgroundColor: theme.PRIMARY,
-        justifyContent: 'center'
-    },
-    container: {
-        flex: 1,
-        backgroundColor: theme.BACKGROUND
-    },
-    messageInput: {
-        padding: 6,
-        paddingLeft: 15,
-        backgroundColor: theme.INPUT,
-        color: theme.TEXT,
-        borderRadius: 20,
-        width: 295,
-        fontSize: 15,
-        marginLeft: 20,
-        marginRight: 5
-    },
-    headTitle: {
-        top:1,
-        alignSelf: 'center',
-        fontSize: 40,
-        width: 100,
-        color: theme.CHAT.title,
-        fontFamily: 'Always'
-    },
-    inputArea: {
-        justifyContent: 'center',
-        flexDirection: 'row',
-        backgroundColor: theme.SECONDARY,
-        padding: 10,
-        paddingBottom: 10,
-        alignItems: 'center'
-    },
-    typing: {
-        flex: 1,
-        justifyContent: 'center',
-        marginBottom: 10,
-        paddingTop: 5
-    },
-    send: {
-        marginLeft: 5,
-        marginRight: 20
-    },
-    button: {
-        color: theme.BUTTON
-    },
-    settings:{
-        alignSelf: 'flex-end',
-        position:'absolute',
-        padding:10,
-        paddingTop:12
-    }
-});
-
-export default withNavigation(ChatRoom);
+export default ChatRoom;

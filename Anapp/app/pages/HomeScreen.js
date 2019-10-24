@@ -192,7 +192,7 @@ export default class HomeScreen extends Component {
                 editable={this.state.first}
                 />
                 <TouchableOpacity onPress={() => this.register()} style={styles.register}>
-                <Icon name="send" size={45} color="#87CEFA" />
+                    <Icon name="send" size={45} color={theme.PRIMARY} />
                 </TouchableOpacity>
             </View>
             );
@@ -212,5 +212,3 @@ export default class HomeScreen extends Component {
 }
 
 HomeScreen.contextType = ThemeContext;
-
-// var styles = StyleSheet.create();
