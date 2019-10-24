@@ -1,7 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
-import theme from '../config/appConfig';
 
 const Message = (props) => {
     return (
@@ -11,11 +10,15 @@ const Message = (props) => {
           activeOpacity={0.6}
           onLongPress={() => props.onLongPress(props.content)}
           style={[styles.messages, props.style]}>
-          <Text style={styles.text}>{props.content}</Text>
+          <Text style={[styles.text,{color:props.textColor}]}>{props.content}</Text>
         </TouchableOpacity>
       </>
     );
 };
+
+Message.propTypes = {
+    textColor:PropTypes.string.isRequired
+  };
 
 const styles = StyleSheet.create({
   messages: { 
@@ -30,7 +33,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 15,
-    color: theme.CHAT.text
+    color: '#fff'
   }
 });
 
@@ -39,7 +42,6 @@ export default Message;
 Message.defaultProps = {
   user:{},
   style:{},
-
   onLongPress:()=>{return null;}
 };
 
