@@ -1,10 +1,11 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { View,  Text, StyleSheet} from 'react-native';
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import theme from '../config/appConfig';
+import {ThemeContext} from '../context/ThemeContext';
 
 const TimeStamp = ({last,current})=>{
+    const {theme} = useContext(ThemeContext);
     let stamp = null;
     let prev = moment(last);
     let now = moment(current);
@@ -23,7 +24,7 @@ const TimeStamp = ({last,current})=>{
     if (stamp){
       return (
         <View style={styles.timestampContainer}>
-          <Text style={styles.timestamp}>{stamp}</Text>
+          <Text style={[styles.timestamp,{color:theme.TIMESTAMP}]}>{stamp}</Text>
         </View>
       );
     }else{
@@ -45,7 +46,6 @@ const styles = StyleSheet.create({
     marginTop: 6
   },
   timestamp: {
-    color: theme.TIMESTAMP,
     fontSize: 10.8,
     letterSpacing: 0.6,
     textTransform: 'uppercase'
