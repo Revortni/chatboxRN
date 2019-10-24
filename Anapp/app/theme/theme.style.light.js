@@ -19,7 +19,7 @@ export default {
     text: '#1A1A1A'
   },
   BUTTON: '#F2F2F2',
-  TEXT: '#1A1A1A',
+  TEXT: '#2A2A2A',
   HOLDERTEXT: '#696969',
   TITLE: '#FFF',
   STATUSBAR:{

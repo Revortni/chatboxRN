@@ -1,14 +1,14 @@
 export default {
   PRIMARY: '#74475D',
   SECONDARY: '#74475D',
-  INPUT: '#ECEDEC',
+  INPUT: '#303030',
   CHAT: {
     sent: '#718D93',
     rec: '#5DA392',
     title: '#ffffff',
     text: '#ffffff',
-    info: '#87CEFA',
-    name: '#A9A9A9'
+    info: '#8D687A',
+    name: '#696969'
   },
   TIMESTAMP: '#696969',
   BACKGROUND: '#ECEDEC',

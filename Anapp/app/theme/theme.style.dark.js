@@ -1,6 +1,6 @@
 export default {
   PRIMARY: '#000000',
-  SECONDARY: '#000000',
+  SECONDARY: '#1A1A1A',
   INPUT: '#202020',
   CHAT: {
     sent: '#4682B4',
@@ -21,7 +21,7 @@ export default {
   BUTTON: '#303030',
   TEXT: '#FFF',
   HOLDERTEXT: '#808080',
-  TITLE: '#FFF',
+  TITLE: '#EEEEEE',
   STATUSBAR:{
     color:'#000',
     style:'light-content'
