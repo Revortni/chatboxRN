@@ -1,18 +1,21 @@
 {
-  "editor.formatOnSave": true,
-  "eslint.autoFixOnSave": true,
-  "eslint.alwaysShowStatus": true,
-  // disable editor formatting, so eslint can handle it
-  "[javascript]": {
-    "editor.formatOnSave": false,
-  },
-  "java.configuration.updateBuildConfiguration": "interactive",
-  "files.eol": "\n",
-  "editor.wordWrap": "on",
-  "workbench.activityBar.visible": true,
-  "editor.fontSize": 14,
-  "terminal.integrated.fontSize": 14,
-  "editor.fontFamily": "'Roboto Slab', 'Courier New', monospace",
-  "terminal.integrated.fontFamily": "monospace",
-  "editor.fontLigatures": true,
+    "editor.formatOnSave": true,
+    "eslint.autoFixOnSave": true,
+    "eslint.alwaysShowStatus": true,
+    // disable editor formatting, so eslint can handle it
+    "[javascript]": {
+        "editor.formatOnSave": false,
+    },
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "files.eol": "\n",
+    "editor.wordWrap": "on",
+    "workbench.activityBar.visible": true,
+    "editor.fontSize": 13,
+    "terminal.integrated.fontSize": 14,
+    "editor.fontFamily": "'Cascadia Code', 'Courier New', monospace",
+    "terminal.integrated.fontFamily": "Cascadia Code",
+    "editor.fontLigatures": true,
+    "editor.letterSpacing": 0,
+    "editor.tabSize": 4,
+    "editor.detectIndentation": false
 }
