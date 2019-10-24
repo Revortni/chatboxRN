@@ -1,4 +1,4 @@
-import React,{useState, useContext} from 'react';
+import React,{useState, useContext,useEffect} from 'react';
 import {TouchableOpacity,View,Text, Switch} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import {ThemeContext} from '../context/ThemeContext';
@@ -97,7 +97,7 @@ const RadioButtons = (props)=>{
 };
 
 const Settings = (props) =>{
-    const [vibrate,setVibrate] = useState(0);
+    const [vibrate,setVibrate] = useState(props.vibrate);
     const {theme} = useContext(ThemeContext); 
     const styles = {
         settings:{
@@ -155,10 +155,18 @@ const Settings = (props) =>{
             }
         ]
         };
-    function toggleVibrate(){
-        setVibrate(vibrate?0:1);
-        props.setVibrate(vibrate);
+
+    async function toggleVibrate(){
+        let temp = !vibrate;
+        setVibrate(temp);
+        props.setVibrate(temp);
     }
+
+    useEffect(() => {
+        setVibrate(props.vibrate);
+        const data = vibrate?'true':'false';
+        AsyncStorage.setItem('@vibrate',data);
+    });
 
     return(
             <View style= {styles.settings}>
@@ -172,7 +180,7 @@ const Settings = (props) =>{
                 <View style={[styles.container,styles.containerRow]}>
                     <Text style={styles.heading}>Vibrate</Text>
                     <View style= {styles.toggleButton}>
-                        <Switch trackColor={{false:'#555',true:'#6FA9CD'}} thumbColor="#87CEFA" onValueChange={toggleVibrate} value={vibrate?true:false}/>
+                        <Switch trackColor={{false:'#555',true:'#6FA9CD'}} thumbColor="#87CEFA" onValueChange={toggleVibrate} value={vibrate}/>
                     </View>
                 </View> 
             </View>   

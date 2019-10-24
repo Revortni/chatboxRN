@@ -35,8 +35,7 @@ class ChatRoom extends React.Component {
         title: 'Gospel',
         connected: null,
         text: '',
-        typing: false,
-        vibrate: 0
+        typing: false
         };
         this.pushMsg = this.pushMsg.bind(this);
         this.pingTimer = null;
@@ -47,6 +46,7 @@ class ChatRoom extends React.Component {
     }
 
     componentDidMount() {
+        this.getVibrate();
         this.socket = SocketIOClient(rltheroku);
         this.socket.emit('appOn');
         this.interval = setInterval(() => {
@@ -169,7 +169,7 @@ class ChatRoom extends React.Component {
                 email: this.state.email
             });
             AsyncStorage.setItem(INFO, data);
-            this.setState({ userid });
+            this.setState({ userid});
             });
         } else {
             let info = JSON.parse(userInfo);
@@ -179,7 +179,7 @@ class ChatRoom extends React.Component {
             let data = JSON.stringify(info);
             AsyncStorage.setItem(INFO, data);
             this.socket.emit('oldUser', info);
-            this.setState(info);
+            this.setState({...info});
         }
         } catch (e) {
         alert(e);
@@ -242,10 +242,16 @@ class ChatRoom extends React.Component {
         this.setState({vibrate});
     };
 
+    getVibrate = async()=>{
+        let vibrate = await AsyncStorage.getItem('@vibrate');
+        vibrate = (vibrate=='true')?true:false;
+        this.setState({vibrate});
+    }
+
     renderSettings = ()=>{
         const value = this.context;
         return(
-            <Settings vibrate={this.state.vibrate} theme={value.theme.name} setVibrate={()=>this.setVibrate}/>
+            <Settings vibrate={this.state.vibrate} theme={value.theme.name} setVibrate={(vibrate)=>this.setState({vibrate})}/>
         );
     }
 
