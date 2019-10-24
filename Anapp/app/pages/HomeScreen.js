@@ -30,7 +30,6 @@ export default class HomeScreen extends Component {
         loaded: false
         };
         this.emailInput = React.createRef();
-        
     }
 
     handleBackPress = () => {
