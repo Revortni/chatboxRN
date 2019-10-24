@@ -1,17 +1,17 @@
 /* eslint-disable react/no-array-index-key */
-import React, { PureComponent} from 'react';
+import React, { Component} from 'react';
 import {  View } from 'react-native';
 import PropTypes from 'prop-types';
 import TimeStamp from './Timestamp';
 import MessageFactory from './MessageFactory';
 
-
-export default class MessageList extends PureComponent {
+export default class MessageList extends Component {
   constructor(props) {
     super(props);
     this.state = {
       messages: props.messages
     };
+    this.lastsender = null;
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -24,23 +24,24 @@ export default class MessageList extends PureComponent {
   }
 
   render() {
-    var lastsender = '';
-    var last = 0;
+    let last = 0;
     if (!this.state.messages) {
       return null;
     }
     return this.state.messages.map((x, i) => {
       let content = null;
       if (x.action == 'sent' || x.action == 'rec') {
-        content = <TimeStamp last = {last} current = {x.createdAt}/>;
+        content = <TimeStamp last = {last} current = {x.createdAt} />;
         last = x.createdAt;
-      }
-      if (x.username != lastsender) {
-        lastsender = x.username;
-      } else {
+      };
+
+    if(this.lastsender != x.username){
+        this.lastsender = x.username;
+    }else{
         x.username = null;
-      }
-      return (
+    }
+
+    return (
         <View key={i}>
           {content}
           <MessageFactory type={x.action} content={x.message} username={x.username} key={i} />

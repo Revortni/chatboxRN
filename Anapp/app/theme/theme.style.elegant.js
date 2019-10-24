@@ -25,5 +25,6 @@ export default {
   STATUSBAR:{
     color:'#74475D',
     style:'light-content'
-  }
+  },
+  name:'elegant'
 };

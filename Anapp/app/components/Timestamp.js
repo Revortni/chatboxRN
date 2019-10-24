@@ -20,15 +20,15 @@ const TimeStamp = ({last,current})=>{
         stamp = now.format('h:mm A');
       }
     }
-    
     if (stamp){
       return (
         <View style={styles.timestampContainer}>
           <Text style={styles.timestamp}>{stamp}</Text>
         </View>
       );
+    }else{
+        return null;
     }
-    return null;
 };
 
 TimeStamp.propTypes = {

@@ -44,10 +44,6 @@ const MessageFactory = props => {
   );
 };
 
-MessageFactory.defaultProps = {
-  username:''
-};
-
 MessageFactory.propTypes = {
   content:PropTypes.string.isRequired,
   username:PropTypes.string,

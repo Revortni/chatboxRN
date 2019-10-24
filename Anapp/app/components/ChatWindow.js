@@ -32,16 +32,16 @@ export default class ChatWindow extends Component {
 
   render() {
     return (
-      <ScrollView
+        <ScrollView
         keyboardShouldPersistTaps="handled"
         ref={ref => (this.scrollView = ref)}
         onContentSizeChange={() => {
           this.scrollView.scrollToEnd({ animated: true });
         }}>
-        <KeyboardAvoidingView style={styles.messageContainer}>
-          <MessageList messages={this.props.oldmessages} />
-          <MessageList messages={[...this.props.messages]} />
-        </KeyboardAvoidingView>
+            <KeyboardAvoidingView style={styles.messageContainer}>
+                <MessageList messages={this.props.oldmessages} />
+                <MessageList messages={[...this.props.messages]} />
+            </KeyboardAvoidingView>
       </ScrollView>
     );
   }

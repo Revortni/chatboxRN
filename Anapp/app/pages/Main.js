@@ -1,28 +1,27 @@
-import React, { Component } from 'react';
-import { StyleSheet, View, StatusBar } from 'react-native';
+import React from 'react';
+import { View, StatusBar} from 'react-native';
 import HomeScreen from './HomeScreen';
-import theme from '../config/appConfig';
+import { ThemeProvider ,ThemeContext} from '../context/ThemeContext';
 
-export default class Main extends Component {
-  render() {
-    return (
-      <>
-        <View style={{ marginBottom: 20 }}>
-          <StatusBar
-            translucent
-            backgroundColor={styles.statusBar.backgroundColor}
-            barStyle={theme.STATUSBAR.style}
-            hidden={false}
-          />
-        </View>
-        <HomeScreen />
-      </>
+const Main = ()=>{
+    
+    return(
+        <ThemeProvider>
+            <ThemeContext.Consumer>{({theme})=>(
+                <>
+                    <StatusBar
+                        backgroundColor={theme.STATUSBAR.color}
+                        barStyle={theme.STATUSBAR.style}
+                        hidden={false}
+                        animated
+                    />
+                    <HomeScreen/>
+                </>
+            )}
+            </ThemeContext.Consumer>
+        </ThemeProvider>
     );
-  }
-}
+};
 
-const styles = StyleSheet.create({
-  statusBar: {
-    backgroundColor: theme.STATUSBAR.color ,
-  }
-});
+
+export default Main;
