@@ -10,9 +10,7 @@ const themes ={
     elegant:themeStyleElegant
 };
 
-export const ThemeContext = createContext({
-
-});
+export const ThemeContext = createContext();
 
 export const ThemeProvider = (props)=>{
     const [theme, setTheme] = useState(themes['light']);
@@ -25,7 +23,7 @@ export const ThemeProvider = (props)=>{
     }, []);
 
     return(
-        <ThemeContext.Provider value={{theme,toggleTheme:setTheme}}>
+        <ThemeContext.Provider value={{theme,setTheme}}>
             {props.children}
         </ThemeContext.Provider>
     );
