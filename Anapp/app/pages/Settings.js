@@ -1,21 +1,90 @@
-import React,{useState, useContext, Component} from 'react';
-import {TouchableOpacity,View,StyleSheet,Text, Switch ,BackHandler} from 'react-native';
+import React,{useState, useContext} from 'react';
+import {TouchableOpacity,View,Text, Switch} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
-import { withNavigation} from 'react-navigation';
-import theme from '../config/appConfig';
+import {ThemeContext} from '../context/ThemeContext';
+import themeStyleDark from '../theme/theme.style.dark';
+import themeStyleLight from '../theme/theme.style.light';
+import themeStyleElegant from '../theme/theme.style.elegant';
 
+const themes ={
+    light:themeStyleLight,
+    dark:themeStyleDark,
+    elegant:themeStyleElegant
+};
 
 const RadioButtons = (props)=>{
-    const [checked,setChecked] = useState(props.checked);
+    const {theme,setTheme} = useContext(ThemeContext);
+    const [checked,setChecked] = useState(theme.name,'dark');
+    const styles = {
+        settings:{
+            flex:1,
+            backgroundColor:theme.BACKGROUND,
+            padding:20 
+        },
+        containerHeader:{},
+        container:{
+            marginTop:10
+        },
+        header:{
+            fontSize:22,
+            marginBottom:20,
+            paddingTop:0,
+            alignContent:'flex-start',
+            color:theme.TEXT,
+            fontWeight:'bold'
+        },
+        radioContainer:{
+    
+        },
+        containerRow:{
+            flex:1,
+            flexDirection:'row'
+        },
+        heading:{
+            fontSize:18,
+            marginBottom:20,
+            paddingTop:0,
+            alignContent:'flex-start',
+            color:theme.TEXT,
+            fontWeight:'bold'
+        },
+        buttonContainer: {
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: 25,
+            marginLeft:5,
+        },
+        buttonText:{
+            fontSize:16,
+            color:theme.TEXT
+        },
+        circle: {
+            height: 18,
+            width: 18,
+            borderRadius: 10,
+            borderWidth: 1,
+            borderColor: theme.TEXT,
+            alignItems: 'center',
+            justifyContent: 'center',
+        },
+        checkedCircle: {
+            width: 14,
+            height: 14,
+            borderRadius: 7,
+            backgroundColor: theme.TEXT,
+        }
+    };
 
-    async function setTheme(key){
+    async function setKey(key){
         setChecked(key);
         await AsyncStorage.setItem('themeName',key);
+        setTheme(themes[key]);
     }
 
     const options = props.options.map(item => {
         return (
-            <TouchableOpacity activeOpacity={.9} key={item.key} style={styles.buttonContainer} onPress={() => setTheme(item.key)}>
+            <TouchableOpacity activeOpacity={.9} key={item.key} style={styles.buttonContainer} onPress={() => setKey(item.key)}>
                 <Text style={styles.buttonText}>{item.text}</Text>
                 <View style={styles.circle}>
                 { checked === item.key && (<View style={styles.checkedCircle} />) } 
@@ -27,14 +96,50 @@ const RadioButtons = (props)=>{
     return(options);
 };
 
-class Settings extends Component{
-    constructor(props){
-        super(props);
-        this.navigation = props.navigation;
-        this.state = {
-            vibrate:props.navigation.getParam('vibrate',false),
-        };
-        this.options = {
+const Settings = (props) =>{
+    const [vibrate,setVibrate] = useState(0);
+    const {theme} = useContext(ThemeContext); 
+    const styles = {
+        settings:{
+            flex:1,
+            backgroundColor:theme.SECONDARY,
+            padding:20 
+        },
+        containerHeader:{},
+        container:{
+            marginTop:10
+        },
+        header:{
+            fontSize:22,
+            marginBottom:20,
+            paddingTop:0,
+            alignContent:'flex-start',
+            color:theme.TEXT,
+            fontWeight:'bold'
+        },
+        radioContainer:{
+    
+        },
+        containerRow:{
+            flex:1,
+            flexDirection:'row'
+        },
+        heading:{
+            fontSize:18,
+            marginBottom:20,
+            paddingTop:0,
+            alignContent:'flex-start',
+            color:theme.TEXT,
+            fontWeight:'bold'
+        },
+        toggleButton:{
+            flex:1,
+            alignContent:'flex-end',
+            paddingRight:0,
+        }
+    };
+    
+    const options = {
             theme:[
             {
                 key: 'light',
@@ -50,97 +155,28 @@ class Settings extends Component{
             }
         ]
         };
+    function toggleVibrate(){
+        setVibrate(vibrate?0:1);
+        props.setVibrate(vibrate);
     }
 
-    static navigationOptions = {
-        title: 'Home',
-        headerStyle: {
-          backgroundColor: theme.PRIMARY,
-        },
-        headerTintColor: '#fff',
-        headerTitleStyle: {
-          fontWeight: 'bold',
-        },
-      };
-
-    onToggle = () =>{
-        this.setState((state)=>{
-           return {vibrate:!state.vibrate};
-        });
-        AsyncStorage.setItem('vibrate',1 && this.state.vibrate);
-    };
-
-    render(){
-        return(
+    return(
             <View style= {styles.settings}>
-            <View style={styles.container}>
-                <Text style={styles.heading}>Themes</Text>
-                <RadioButtons options={this.options.theme} checked={this.navigation.getParam('theme', 'light')}/>
-            </View> 
-            <View style={[styles.container,styles.container1]}>
-                <Text style={styles.heading}>Vibrate</Text>
-                <View style= {styles.toggleButton}>
-                    <Switch trackColor={{false:'#555',true:'#6FA9CD'}} thumbColor="#87CEFA" onValueChange={this.onToggle} value={this.state.vibrate}   />
+                <View style={styles.containerHeader}>
+                    <Text style={styles.header}>Settings</Text>
                 </View>
-            </View> 
+                <View style={styles.container}>
+                    <Text style={styles.heading}>Themes</Text>
+                    <RadioButtons options={options.theme}/>
+                </View> 
+                <View style={[styles.container,styles.containerRow]}>
+                    <Text style={styles.heading}>Vibrate</Text>
+                    <View style= {styles.toggleButton}>
+                        <Switch trackColor={{false:'#555',true:'#6FA9CD'}} thumbColor="#87CEFA" onValueChange={toggleVibrate} value={vibrate?true:false}/>
+                    </View>
+                </View> 
             </View>   
         );
-    }
 };
 
-const styles = StyleSheet.create({
-    settings:{
-        flex:1,
-        backgroundColor:theme.BACKGROUND,
-    },
-    buttonContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 25,
-        marginLeft:5,
-    },
-    buttonText:{
-        fontSize:16,
-        color:theme.TEXT
-    },
-    circle: {
-        height: 18,
-        width: 18,
-        borderRadius: 10,
-        borderWidth: 1,
-        borderColor: '#ACACAC',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    checkedCircle: {
-        width: 14,
-        height: 14,
-        borderRadius: 7,
-        backgroundColor: '#91D2FA',
-    },
-    container:{
-        padding:20,
-        paddingBottom:0,
-    },
-    container1:{
-        flex:1,
-        flexDirection:'row',
-        paddingRight:5
-    },
-    heading:{
-        fontSize:20,
-        marginBottom:20,
-        paddingTop:0,
-        alignContent:'flex-start',
-        color:theme.TEXT,
-        fontWeight:'bold'
-    },
-    toggleButton:{
-        flex:1,
-        alignContent:'flex-end',
-        paddingRight:0,
-    }
-});
-
-export default withNavigation(Settings);
+export default Settings;
