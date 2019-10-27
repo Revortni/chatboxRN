@@ -160,6 +160,8 @@ class ChatRoom extends React.Component {
     _getInfo = async () => {
         try {
         const userInfo = await AsyncStorage.getItem(INFO);
+        let vibrate = await AsyncStorage.getItem('@vibrate');
+        vibrate = (vibrate=='true')?true:false;
         if (userInfo == null) {
             this.socket.emit('newUser', { username: this.state.username, email: this.state.email });
             this.socket.on('userInfo', userid => {
